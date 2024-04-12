@@ -29,5 +29,21 @@ namespace Rosters.Features.Locations
         [HttpPost("search")]
         public async Task<IActionResult> SearchLocations([FromBody] SearchLocations request) =>
             Ok(await _mediator.Send(request));
+
+        [HttpPut("{LocationId}")]
+        public async Task<IActionResult> UpdateLocation(UpdateLocation request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null) return NotFound();
+            return Ok(response);
+        }
+
+        [HttpPatch("{LocationId}")]
+        public async Task<IActionResult> PatchLocation(PartialUpdateLocation request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null) return NotFound();
+            return Ok(response);
+        }
     }
 }

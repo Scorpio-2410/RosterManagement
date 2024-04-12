@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rosters.Models;
 
@@ -10,15 +11,16 @@ builder.Host.ConfigureAppConfiguration(options =>
 ;
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressInferBindingSourcesForParameters = true; });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Registers Rostercontext with application dependency injection container
-builder.Services.AddDbContext<RostersContext>(( options) =>
+builder.Services.AddDbContext<RostersContext>((options) =>
 {
-    
+
     //SQL database provider & search for connection string
     options.UseSqlServer("name=Database");
 });
