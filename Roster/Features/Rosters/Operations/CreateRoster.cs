@@ -25,7 +25,7 @@ namespace Rosters.Features.Rosters.Operations
 
         public async Task<CreateRosterResponse> Handle(CreateRoster request, CancellationToken cancellationToken)
         {
-            var roster = new Roster
+            var roster = new Models.Roster
             {
                 LocationId = request.LocationId,
                 StartingWeek = request.StartingWeek,

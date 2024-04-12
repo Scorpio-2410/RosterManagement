@@ -1,6 +1,6 @@
 BEGIN TRAN
 
-CREATE TABLE Location(
+CREATE TABLE Locations(
     location_id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     address1 NVARCHAR(256) NULL,
     address2 NVARCHAR(256) NULL,
@@ -23,7 +23,7 @@ CREATE TABLE Users (
 CREATE TABLE Rosters (
     roster_id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     location_id INT NOT NULL
-                FOREIGN KEY REFERENCES Location(location_id),
+                FOREIGN KEY REFERENCES Locations(location_id),
     starting_week DATETIME NOT NULL,
 )
 

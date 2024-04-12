@@ -3,6 +3,11 @@ using Rosters.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.ConfigureAppConfiguration(options =>
+    {
+        options.AddUserSecrets<Program>(true);
+    })
+;
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -11,10 +16,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Registers Rostercontext with application dependency injection container
-builder.Services.AddDbContext<RostersContext>(options =>
+builder.Services.AddDbContext<RostersContext>(( options) =>
 {
+    
     //SQL database provider & search for connection string
-    options.UseSqlServer("name=ConnectionStings:Database");
+    options.UseSqlServer("name=Database");
 });
 
 //Registers MediatR services in the application's dependency injection container.
