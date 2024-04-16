@@ -8,7 +8,7 @@ namespace Roster.Features.Users.Operations
 {
     public class SearchUsers : IRequest<SearchResponse<GetUserResponse>>
     {
-        public string LastName { get; set; } = null!;
+        public string? LastName { get; set; }
         public int PageSize { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
     }
@@ -41,6 +41,7 @@ namespace Roster.Features.Users.Operations
                 .Take(request.PageSize)
                 .Select(x => new GetUserResponse
                 {
+                    UserId = x.UserId,
                     FirstName = x.FirstName,
                     LastName = x.LastName,
                     Role = x.Role,

@@ -51,5 +51,19 @@ namespace Rosters.Features.Rosters
             return Ok(response);
         }
 
+
+        [HttpGet("{RosterId}/shifts")]
+        public async Task<IActionResult> GetRosterShifts(
+        //TODO
+        )
+        {
+            //var response = await _mediator.Send(request);
+            //if (response == null) return NotFound();
+            //return Ok(response);
+
+            throw new NotImplementedException();
+
+            return Ok();
+        }
     }
 }

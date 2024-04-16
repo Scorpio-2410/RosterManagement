@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Roster.Services;
 using Rosters.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,9 @@ builder.Services.AddDbContext<RostersContext>((options) =>
 
 //Registers MediatR services in the application's dependency injection container.
 builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
+
+// application services
+builder.Services.AddTransient<RosterService>();
 
 var app = builder.Build();
 

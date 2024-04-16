@@ -21,6 +21,7 @@ namespace Roster1.Features.Shifts
             var response = await _mediator.Send(request);
             return Ok(response);
         }
+        
         [HttpGet("{ShiftId}")]
         public async Task<IActionResult> GetShift(GetShift request)
         {
@@ -48,5 +49,7 @@ namespace Roster1.Features.Shifts
             if (response == null) return NotFound();  
             return Ok(response);
         }
+
+        
     }
 }
