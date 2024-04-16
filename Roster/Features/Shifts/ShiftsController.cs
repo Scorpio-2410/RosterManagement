@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Roster.Features.Shifts.Operations;
 using Rosters.Features.Shifts.Operations;
 
 
@@ -26,6 +26,26 @@ namespace Roster1.Features.Shifts
         {
             var response = await _mediator.Send(request);
             if (response == null) return NotFound();
+            return Ok(response);
+        }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchShifts([FromBody] SearchShifts request) =>
+            Ok(await _mediator.Send(request));
+
+        [HttpPut("{ShiftId}")]
+        public async Task<IActionResult> UpdateShift(UpdateShifts request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null) return NotFound();
+            return Ok(response);
+        }
+
+        [HttpPatch("{ShiftId}")]
+        public async Task<IActionResult> PatchRoster(PartialUpdateShift request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null) return NotFound();  
             return Ok(response);
         }
     }
