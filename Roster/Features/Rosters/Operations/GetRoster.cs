@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Roster.Features.Rosters.Shared;
 using Rosters.Features.Locations.Operations;
 using Rosters.Models;
 
@@ -9,13 +10,6 @@ namespace Rosters.Features.Rosters.Operations
     public class GetRoster : IRequest<GetRosterResponse>
     {
         [FromRoute] public int RosterId { get; set; }
-    }
-
-    public class GetRosterResponse
-    {
-        public int RosterId { get; set; }
-        public int LocationId { get; set; }
-        public DateTime StartingWeek { get; set; }
     }
 
     public class GetRosterHandler : IRequestHandler<GetRoster,GetRosterResponse> 
