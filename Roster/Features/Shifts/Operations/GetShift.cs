@@ -1,27 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Roster.Features.Shifts.Shared;
 using Rosters.Models;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Rosters.Features.Shifts.Operations
 {
     public class GetShift : IRequest<GetShiftResponse>
     {
         [FromRoute] public int ShiftId { get; set; }
-    }
-
-    public class GetShiftResponse
-    {
-        public int ShiftId { get; set; }
-        public int RosterId { get; set; }
-        public int UserId { get; set; }
-        public int? PayslipId { get; set; }
-        public DateTime StartAt { get; set; }
-        public DateTime EndAt { get; set; }
-        public decimal? CostRateHourly { get; set; }
-        public decimal? TotalHours { get; set; }
-        public decimal? TotalCost { get; set; }
     }
 
     public class GetShiftHandler : IRequestHandler<GetShift, GetShiftResponse>
