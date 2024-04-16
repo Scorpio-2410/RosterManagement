@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Roster.Features.Users.Operations;
 using Roster1.Features.Users.Operations;
 
 namespace Roster1.Features.Users
@@ -27,6 +28,24 @@ namespace Roster1.Features.Users
             return Ok(response);
         }
 
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchUsers([FromBody] SearchUsers request) =>
+            Ok(await _mediator.Send(request));
 
+        [HttpPut("{UserId}")]
+        public async Task<IActionResult> UpdateUser(UpdateUser request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null) return NotFound();
+            return Ok(response);
+        }
+
+        [HttpPatch("{UserId}")]
+        public async Task<IActionResult> PatchLocation(PartialUpdateUser request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null) return NotFound();
+            return Ok(response);
+        }
     }
 }
