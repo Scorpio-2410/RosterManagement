@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Roster.Features.Users.Shared;
 using Rosters.Models;
 
 namespace Roster1.Features.Users.Operations
@@ -8,19 +9,6 @@ namespace Roster1.Features.Users.Operations
     public class GetUser : IRequest<GetUserResponse>
     {
         [FromRoute] public int UserId { get; set; }
-    }
-
-    public class GetUserResponse
-    {
-        public int UserId { get; set; }
-
-        public string FirstName { get; set; } = null!;
-
-        public string LastName { get; set; } = null!;
-
-        public string Role { get; set; } = null!;
-
-        public string? Availability { get; set; }
     }
 
     public class GetUserhandler : IRequestHandler<GetUser, GetUserResponse>
