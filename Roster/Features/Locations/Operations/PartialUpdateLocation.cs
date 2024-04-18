@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Roster.Features.Locations.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Locations.Operations
 {

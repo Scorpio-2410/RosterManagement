@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Rosters.Features.Rosters.Operations
 {
@@ -25,7 +25,7 @@ namespace Rosters.Features.Rosters.Operations
 
         public async Task<CreateRosterResponse> Handle(CreateRoster request, CancellationToken cancellationToken)
         {
-            var roster = new Models.Roster
+            var roster = new Roster.Models.Roster()
             {
                 LocationId = request.LocationId,
                 StartingWeek = request.StartingWeek,

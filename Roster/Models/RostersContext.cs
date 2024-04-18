@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Rosters.Models;
+namespace Roster.Models;
 
 public partial class RostersContext : DbContext
 {
@@ -33,9 +33,7 @@ public partial class RostersContext : DbContext
     {
         modelBuilder.Entity<Location>(entity =>
         {
-            entity.HasKey(e => e.LocationId).HasName("PK__Location__771831EA312D5FDC");
-
-            entity.ToTable("Locations");
+            entity.HasKey(e => e.LocationId).HasName("PK__Location__771831EAB9B88B81");
 
             entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.Address1)
@@ -57,7 +55,7 @@ public partial class RostersContext : DbContext
 
         modelBuilder.Entity<Payslip>(entity =>
         {
-            entity.HasKey(e => e.PayslipId).HasName("PK__Payslip__09FF4DA4510D12D0");
+            entity.HasKey(e => e.PayslipId).HasName("PK__Payslip__09FF4DA43377973A");
 
             entity.ToTable("Payslip");
 
@@ -88,12 +86,12 @@ public partial class RostersContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Payslips)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payslip__user_id__4CA06362");
+                .HasConstraintName("FK__Payslip__user_id__2B3F6F97");
         });
 
         modelBuilder.Entity<Roster>(entity =>
         {
-            entity.HasKey(e => e.RosterId).HasName("PK__Rosters__B168360976804A06");
+            entity.HasKey(e => e.RosterId).HasName("PK__Rosters__B16836099A5197E3");
 
             entity.Property(e => e.RosterId).HasColumnName("roster_id");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
@@ -104,18 +102,19 @@ public partial class RostersContext : DbContext
             entity.HasOne(d => d.Location).WithMany(p => p.Rosters)
                 .HasForeignKey(d => d.LocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rosters__locatio__49C3F6B7");
+                .HasConstraintName("FK__Rosters__locatio__286302EC");
         });
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => e.ShiftId).HasName("PK__Shifts__7B267220E74CA3EF");
+            entity.HasKey(e => e.ShiftId).HasName("PK__Shifts__7B267220A4B2BC6D");
 
             entity.Property(e => e.ShiftId).HasColumnName("shift_id");
             entity.Property(e => e.CostRateHourly)
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("cost_rate_hourly");
             entity.Property(e => e.EndAt).HasColumnName("end_at");
+            entity.Property(e => e.IsSpecial).HasColumnName("is_special");
             entity.Property(e => e.PayslipId).HasColumnName("payslip_id");
             entity.Property(e => e.RosterId).HasColumnName("roster_id");
             entity.Property(e => e.StartAt).HasColumnName("start_at");
@@ -129,22 +128,22 @@ public partial class RostersContext : DbContext
 
             entity.HasOne(d => d.Payslip).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.PayslipId)
-                .HasConstraintName("FK__Shifts__payslip___5165187F");
+                .HasConstraintName("FK__Shifts__payslip___300424B4");
 
             entity.HasOne(d => d.Roster).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.RosterId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Shifts__roster_i__4F7CD00D");
+                .HasConstraintName("FK__Shifts__roster_i__2E1BDC42");
 
             entity.HasOne(d => d.User).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Shifts__user_id__5070F446");
+                .HasConstraintName("FK__Shifts__user_id__2F10007B");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FA2ED55AF");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FE07FF77E");
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Availability)

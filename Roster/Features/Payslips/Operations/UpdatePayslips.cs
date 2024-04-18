@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Roster.Features.Payslips.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Payslips.Operations
 {

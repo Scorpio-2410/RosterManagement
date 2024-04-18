@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Roster.Features.Payslips.Shared;
 using Roster.Features.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Payslips.Operations
 {

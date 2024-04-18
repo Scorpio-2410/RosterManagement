@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Roster.Services;
-using Rosters.Models;
+using Roster.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

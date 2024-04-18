@@ -2,7 +2,7 @@
 using Roster.Features.Locations.Shared;
 using Roster.Features.Shared;
 using Roster.Features.Users.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Users.Operations
 {

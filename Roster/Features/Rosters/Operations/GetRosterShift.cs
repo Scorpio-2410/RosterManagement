@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Roster.Features.Rosters.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Rosters.Operations
 {

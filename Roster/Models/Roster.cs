@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rosters.Models;
+namespace Roster.Models;
 
 public partial class Roster
 {

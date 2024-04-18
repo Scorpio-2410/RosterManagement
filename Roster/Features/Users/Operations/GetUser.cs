@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Roster.Features.Users.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster1.Features.Users.Operations
 {

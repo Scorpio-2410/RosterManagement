@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Services
 {
@@ -12,7 +12,7 @@ namespace Roster.Services
             _context = context;
         }
 
-        public async Task<(Rosters.Models.Roster, Shift shift)> AddShift(int rosterId, int userId, DateTime startAt, DateTime endAt)
+        public async Task<(Roster.Models.Roster, Shift shift)> AddShift(int rosterId, int userId, DateTime startAt, DateTime endAt)
         {
             var roster = _context.Rosters
                 .Include(x => x.Shifts)
@@ -66,7 +66,7 @@ namespace Roster.Services
             await _context.SaveChangesAsync();
             return true;
         }
-            DateTime LastDateInRoster(Rosters.Models.Roster roster)
+            DateTime LastDateInRoster(Roster.Models.Roster roster)
         {
             var days = 7;
             //switch (Duration)

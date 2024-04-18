@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster1.Features.Users.Operations
 {

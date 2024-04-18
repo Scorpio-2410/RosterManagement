@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Roster.Features.Rosters.Shared;
 using Roster.Features.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Rosters.Operations
 {

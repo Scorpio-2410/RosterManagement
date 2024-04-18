@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Roster.Features.Payslips.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Rosters.Features.Payslips.Operations
 {

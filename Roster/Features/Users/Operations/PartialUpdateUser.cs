@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Roster.Features.Users.Shared;
-using Rosters.Models;
+using Roster.Models;
 
 namespace Roster.Features.Users.Operations
 {

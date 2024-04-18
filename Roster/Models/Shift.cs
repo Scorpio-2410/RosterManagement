@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rosters.Models;
+namespace Roster.Models;
 
 public partial class Shift
 {
@@ -22,6 +22,8 @@ public partial class Shift
     public decimal? TotalHours { get; set; }
 
     public decimal? TotalCost { get; set; }
+
+    public bool IsSpecial { get; set; }
 
     public virtual Payslip? Payslip { get; set; }
 

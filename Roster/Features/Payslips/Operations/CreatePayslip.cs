@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Rosters.Features.Rosters;
-using Rosters.Features.Rosters.Operations;
-using Rosters.Models;
+using Roster.Features.Rosters;
+using Roster.Features.Rosters.Operations;
+using Roster.Models;
 using System.Security.AccessControl;
 
 namespace Rosters.Features.Payslips.Operations
