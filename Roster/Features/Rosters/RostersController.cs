@@ -14,7 +14,7 @@ namespace Rosters.Features.Rosters
         {
             _mediator = mediator;
         }
-        [HttpPost("createroster")]
+        [HttpPost]
         public async Task<IActionResult> CreateRoster([FromBody] CreateRoster request)
         {
             var response = await _mediator.Send(request);
@@ -33,21 +33,21 @@ namespace Rosters.Features.Rosters
             return Ok(response);
         }
 
-        [HttpPost("createshift")]
-        public async Task<IActionResult> CreateShift([FromBody] CreateShift request)
+        [HttpPost("{RosterId}/shifts")]
+        public async Task<IActionResult> CreateShift(CreateShift request)
         {
             var response = await _mediator.Send(request);
             return Ok(response);
         }
 
-        [HttpGet("{RosterId}/getshifts")]
+        [HttpGet("{RosterId}/shifts")]
         public async Task<IActionResult> GetRosterShifts(GetRosterShifts request)
         {
             var response = await _mediator.Send(request);
             if (response == null) return NotFound();
             return Ok(response);
         }
-        [HttpDelete("{ShiftId}/removeshift")]
+        [HttpDelete("{RosterId}/shifts/{ShiftId}")]
         public async Task<IActionResult> DeleteShift(DeleteShift request)
         {
             var response = await _mediator.Send(request);

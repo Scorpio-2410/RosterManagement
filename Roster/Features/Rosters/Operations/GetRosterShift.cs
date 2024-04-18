@@ -23,8 +23,8 @@ namespace Roster.Features.Rosters.Operations
                 .Where(x => x.RosterId == request.RosterId)
                 .Select(shifts => new GetShiftResponse
                 {
-                    ShiftId = shifts.ShiftId,
                     RosterId = shifts.RosterId,
+                    ShiftId = shifts.ShiftId,
                     UserId = shifts.UserId,
                     StartAt = shifts.StartAt,
                     EndAt = shifts.EndAt,

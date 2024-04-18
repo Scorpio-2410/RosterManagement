@@ -1,19 +1,23 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Roster.Services;
 
 namespace Roster.Features.Rosters.Operations
 {
     public class CreateShift : IRequest<CreateShitResponse?>
     {
-        public int RosterId { get; set; }
+        [FromRoute] public int RosterId { get; set; }
+        [FromBody] public CreateShiftPayload Payload { get; set; }
+ 
+    }
 
+    public class CreateShiftPayload
+    {
         public int UserId { get; set; }
 
         public DateTime StartAt { get; set; }
 
         public DateTime EndAt { get; set; }
-
-
     }
 
     public class CreateShitResponse
@@ -34,8 +38,9 @@ namespace Roster.Features.Rosters.Operations
         {
             try
             {
+                var payload = request.Payload;
                 var (roster, shift) =
-                    await _rosterService.AddShift(request.RosterId, request.UserId, request.StartAt, request.EndAt);
+                    await _rosterService.AddShift(request.RosterId, payload.UserId, payload.StartAt, payload.EndAt);
 
                 return new() { ShiftId = shift.ShiftId };
             }

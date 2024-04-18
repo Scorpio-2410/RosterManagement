@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Roster.Services;
 
 namespace Roster.Features.Rosters.Operations
 {
     public class DeleteShift : IRequest<bool>
     {
-        public int ShiftId { get; set; }
+        [FromRoute] public int ShiftId { get; set; }
     }
 
     public class DeleteShiftHandler : IRequestHandler<DeleteShift, bool>
