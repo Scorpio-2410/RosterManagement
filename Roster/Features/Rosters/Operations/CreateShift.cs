@@ -1,20 +1,19 @@
 ﻿using MediatR;
 using Roster.Services;
-using Rosters.Models;
 
-namespace Roster.Features.Shifts.Operations
+namespace Roster.Features.Rosters.Operations
 {
     public class CreateShift : IRequest<CreateShitResponse?>
     {
         public int RosterId { get; set; }
 
         public int UserId { get; set; }
-        
+
         public DateTime StartAt { get; set; }
 
         public DateTime EndAt { get; set; }
 
-        
+
     }
 
     public class CreateShitResponse
@@ -35,18 +34,15 @@ namespace Roster.Features.Shifts.Operations
         {
             try
             {
-                var (roster,shift) =
+                var (roster, shift) =
                     await _rosterService.AddShift(request.RosterId, request.UserId, request.StartAt, request.EndAt);
 
-                return new() {ShiftId = shift.ShiftId};
+                return new() { ShiftId = shift.ShiftId };
             }
             catch (Exception e)
             {
                 return null;
             }
-           
-
-            
         }
     }
 }

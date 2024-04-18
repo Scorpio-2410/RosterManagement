@@ -52,6 +52,7 @@ namespace Roster.Features.Users.Operations
 
             return new()
             {
+                UserId = request.UserId,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Role = u.Role,

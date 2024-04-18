@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Rosters.Models;
 
 namespace Roster.Services
@@ -40,7 +39,7 @@ namespace Roster.Services
 
             // Business Rule 5: a worker cant work more than 8 hours in a roster
             if (roster.Shifts.Where(x => x.UserId == userId).Sum(x => x.TotalHours) + (endAt - startAt).Hours
-                > 8)
+                > 20)
                 throw new ArgumentOutOfRangeException(nameof(userId), "Cant work more than 8 hours in roster!");
 
             var shift = new Shift
@@ -59,7 +58,15 @@ namespace Roster.Services
             return (roster, shift);
         }
 
-        DateTime LastDateInRoster(Rosters.Models.Roster roster)
+        public async Task<bool> RemoveShift(int shiftId)
+        {
+            var shift = await _context.Shifts.FindAsync(shiftId);
+            if (shift == null) throw new ArgumentNullException(nameof(shiftId), "Shift does not exist!");
+            _context.Shifts.Remove(shift);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+            DateTime LastDateInRoster(Rosters.Models.Roster roster)
         {
             var days = 7;
             //switch (Duration)

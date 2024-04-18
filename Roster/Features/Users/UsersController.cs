@@ -32,14 +32,6 @@ namespace Roster1.Features.Users
         public async Task<IActionResult> SearchUsers([FromBody] SearchUsers request) =>
             Ok(await _mediator.Send(request));
 
-        [HttpPut("{UserId}")]
-        public async Task<IActionResult> UpdateUser(UpdateUser request)
-        {
-            var response = await _mediator.Send(request);
-            if (response == null) return NotFound();
-            return Ok(response);
-        }
-
         [HttpPatch("{UserId}")]
         public async Task<IActionResult> PatchLocation(PartialUpdateUser request)
         {
