@@ -1,0 +1,5 @@
+ALTER TABLE Rosters
+ADD is_locked bit NOT NULL DEFAULT(0);
+
+ALTER TABLE Rosters
+ADD locked_at DATETIME2 NULL;

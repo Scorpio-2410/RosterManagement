@@ -94,7 +94,9 @@ public partial class RostersContext : DbContext
             entity.HasKey(e => e.RosterId).HasName("PK__Rosters__B16836099A5197E3");
 
             entity.Property(e => e.RosterId).HasColumnName("roster_id");
+            entity.Property(e => e.IsLocked).HasColumnName("is_locked");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
+            entity.Property(e => e.LockedAt).HasColumnName("locked_at");
             entity.Property(e => e.StartingWeek)
                 .HasColumnType("datetime")
                 .HasColumnName("starting_week");
