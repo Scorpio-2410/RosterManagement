@@ -16,7 +16,7 @@ namespace Roster.Features.Payslips.Operations
         public DateTime PeriodFrom { get; set; }
         public DateTime PeriodTo { get; set; }
         public DateTime PaymentDate { get; set; }
-        public decimal? TotalHours { get; set; }
+        public int? TotalMinutes { get; set; }
         public decimal? GrossIncome { get; set; }
         public decimal? TaxAmount { get; set; }
         public decimal? NetIncome { get; set; }
@@ -37,7 +37,7 @@ namespace Roster.Features.Payslips.Operations
             p.PeriodFrom = request.Payload.PeriodFrom;
             p.PeriodTo = request.Payload.PeriodTo;
             p.PaymentDate = request.Payload.PaymentDate;
-            p.TotalHours = request.Payload.TotalHours;
+            p.TotalMinutes = request.Payload.TotalMinutes;
             p.GrossIncome = request.Payload.GrossIncome;
             p.TaxAmount = request.Payload.TaxAmount;   
             p.NetIncome = request.Payload.NetIncome;
@@ -49,7 +49,7 @@ namespace Roster.Features.Payslips.Operations
                 PeriodFrom = p.PeriodFrom,
                 PeriodTo = p.PeriodTo,
                 PaymentDate = p.PaymentDate,
-                TotalHours = p.TotalHours,
+                TotalMinutes = p.TotalMinutes,
                 GrossIncome = p.GrossIncome,
                 TaxAmount = p.TaxAmount,
                 NetIncome = p.NetIncome

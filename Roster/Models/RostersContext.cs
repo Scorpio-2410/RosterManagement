@@ -27,13 +27,13 @@ public partial class RostersContext : DbContext
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=.;Database=Rosters;User Id=sa;Password=N24Scorpio!;TrustServerCertificate=True;");
+//        => optionsBuilder.UseSqlServer("Server=.;Database=Rosters;User Id=sa;Password=s@rmaad2!;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Location>(entity =>
         {
-            entity.HasKey(e => e.LocationId).HasName("PK__Location__771831EAB9B88B81");
+            entity.HasKey(e => e.LocationId).HasName("PK__Location__771831EAAF730581");
 
             entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.Address1)
@@ -55,7 +55,7 @@ public partial class RostersContext : DbContext
 
         modelBuilder.Entity<Payslip>(entity =>
         {
-            entity.HasKey(e => e.PayslipId).HasName("PK__Payslip__09FF4DA43377973A");
+            entity.HasKey(e => e.PayslipId).HasName("PK__Payslip__09FF4DA4A8FADC43");
 
             entity.ToTable("Payslip");
 
@@ -66,50 +66,40 @@ public partial class RostersContext : DbContext
             entity.Property(e => e.NetIncome)
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("net_income");
-            entity.Property(e => e.PaymentDate)
-                .HasColumnType("datetime")
-                .HasColumnName("payment_date");
-            entity.Property(e => e.PeriodFrom)
-                .HasColumnType("datetime")
-                .HasColumnName("period_from");
-            entity.Property(e => e.PeriodTo)
-                .HasColumnType("datetime")
-                .HasColumnName("period_to");
+            entity.Property(e => e.PaymentDate).HasColumnName("payment_date");
+            entity.Property(e => e.PeriodFrom).HasColumnName("period_from");
+            entity.Property(e => e.PeriodTo).HasColumnName("period_to");
             entity.Property(e => e.TaxAmount)
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("tax_amount");
-            entity.Property(e => e.TotalHours)
-                .HasColumnType("decimal(8, 2)")
-                .HasColumnName("total_hours");
+            entity.Property(e => e.TotalMinutes).HasColumnName("total_minutes");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Payslips)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payslip__user_id__2B3F6F97");
+                .HasConstraintName("FK__Payslip__user_id__3F466844");
         });
 
         modelBuilder.Entity<Roster>(entity =>
         {
-            entity.HasKey(e => e.RosterId).HasName("PK__Rosters__B16836099A5197E3");
+            entity.HasKey(e => e.RosterId).HasName("PK__Rosters__B1683609A23FAD64");
 
             entity.Property(e => e.RosterId).HasColumnName("roster_id");
             entity.Property(e => e.IsLocked).HasColumnName("is_locked");
             entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.LockedAt).HasColumnName("locked_at");
-            entity.Property(e => e.StartingWeek)
-                .HasColumnType("datetime")
-                .HasColumnName("starting_week");
+            entity.Property(e => e.StartingWeek).HasColumnName("starting_week");
 
             entity.HasOne(d => d.Location).WithMany(p => p.Rosters)
                 .HasForeignKey(d => d.LocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rosters__locatio__286302EC");
+                .HasConstraintName("FK__Rosters__locatio__3C69FB99");
         });
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => e.ShiftId).HasName("PK__Shifts__7B267220A4B2BC6D");
+            entity.HasKey(e => e.ShiftId).HasName("PK__Shifts__7B267220A89D15C0");
 
             entity.Property(e => e.ShiftId).HasColumnName("shift_id");
             entity.Property(e => e.CostRateHourly)
@@ -123,29 +113,27 @@ public partial class RostersContext : DbContext
             entity.Property(e => e.TotalCost)
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("total_cost");
-            entity.Property(e => e.TotalHours)
-                .HasColumnType("decimal(8, 2)")
-                .HasColumnName("total_hours");
+            entity.Property(e => e.TotalMinutes).HasColumnName("total_minutes");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Payslip).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.PayslipId)
-                .HasConstraintName("FK__Shifts__payslip___300424B4");
+                .HasConstraintName("FK__Shifts__payslip___440B1D61");
 
             entity.HasOne(d => d.Roster).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.RosterId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Shifts__roster_i__2E1BDC42");
+                .HasConstraintName("FK__Shifts__roster_i__4222D4EF");
 
             entity.HasOne(d => d.User).WithMany(p => p.Shifts)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Shifts__user_id__2F10007B");
+                .HasConstraintName("FK__Shifts__user_id__4316F928");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FE07FF77E");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FACD4686E");
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Availability)

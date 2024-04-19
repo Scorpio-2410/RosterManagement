@@ -33,7 +33,7 @@ namespace Rosters.Features.Payslips.Operations
                 PeriodFrom = payslip.PeriodFrom,
                 PeriodTo = payslip.PeriodTo,
                 PaymentDate = payslip.PaymentDate,
-                TotalHours = payslip.TotalHours,
+                TotalMinutes = payslip.TotalMinutes,
                 GrossIncome = payslip.GrossIncome,
                 TaxAmount = payslip.TaxAmount,
                 NetIncome = payslip.NetIncome

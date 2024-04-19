@@ -7,7 +7,7 @@
         public DateTime PeriodFrom { get; set; }
         public DateTime PeriodTo { get; set; }
         public DateTime PaymentDate { get; set; }
-        public decimal? TotalHours { get; set; }
+        public int? TotalMinutes { get; set; }
         public decimal? GrossIncome { get; set; }
         public decimal? TaxAmount { get; set; }
         public decimal? NetIncome { get; set; }

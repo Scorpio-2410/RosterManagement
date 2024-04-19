@@ -43,7 +43,7 @@ namespace Roster.Features.Payslips.Operations
                     UserId = x.UserId,
                     PeriodFrom = x.PeriodFrom,
                     PeriodTo = x.PeriodTo,
-                    TotalHours = x.TotalHours,
+                    TotalMinutes = x.TotalMinutes,
                     GrossIncome = x.GrossIncome,
                     TaxAmount = x.TaxAmount,
                     NetIncome = x.NetIncome,

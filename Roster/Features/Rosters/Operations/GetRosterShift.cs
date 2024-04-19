@@ -28,7 +28,7 @@ namespace Roster.Features.Rosters.Operations
                     UserId = shifts.UserId,
                     StartAt = shifts.StartAt,
                     EndAt = shifts.EndAt,
-                    TotalHours = shifts.TotalHours
+                    TotalMinutes = shifts.TotalMinutes
                 })
                 .ToList();
             return shifts;

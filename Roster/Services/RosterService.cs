@@ -37,8 +37,8 @@ namespace Roster.Services
             if (roster.Shifts.Any(s => s.UserId == userId && s.StartAt.Date == startAt.Date))
                 throw new ArgumentOutOfRangeException(nameof(userId), "Cant work twice on the same day!");
 
-            // Business Rule 5: a worker cant work more than 8 hours in a roster
-            if (roster.Shifts.Where(x => x.UserId == userId).Sum(x => x.TotalHours) + (endAt - startAt).Hours
+            // Business Rule 5: a worker cant work more than 20 hours in a roster
+            if (roster.Shifts.Where(x => x.UserId == userId).Sum(x => (x.TotalMinutes ?? 0) / 60) + (endAt - startAt).Hours
                 > 20)
                 throw new ArgumentOutOfRangeException(nameof(userId), "Cant work more than 8 hours in roster!");
 
@@ -48,7 +48,7 @@ namespace Roster.Services
                 StartAt = startAt,
                 EndAt = endAt,
 
-                TotalHours = (endAt - startAt).Hours,
+                TotalMinutes = (endAt - startAt).Minutes,
 
             };
             roster.Shifts.Add(shift);
@@ -66,7 +66,7 @@ namespace Roster.Services
             await _context.SaveChangesAsync();
             return true;
         }
-        
+
         public DateTime LastDateInRoster(Roster.Models.Roster roster)
         {
             var days = 7;

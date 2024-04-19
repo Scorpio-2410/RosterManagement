@@ -19,7 +19,7 @@ public partial class Shift
 
     public decimal? CostRateHourly { get; set; }
 
-    public decimal? TotalHours { get; set; }
+    public int? TotalMinutes { get; set; }
 
     public decimal? TotalCost { get; set; }
 

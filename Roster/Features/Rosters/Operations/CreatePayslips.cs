@@ -52,6 +52,7 @@ namespace Roster.Features.Rosters.Operations
                     UserId = userShifts.Key,
                     PeriodFrom = roster.StartingWeek,
                     PeriodTo = _rosterService.LastDateInRoster(roster),
+                    TotalMinutes = userShifts.Sum(x => x.TotalMinutes),
                     PaymentDate = paidAt,
                     GrossIncome = grossIncome,
                     TaxAmount = taxAmount,
@@ -70,7 +71,7 @@ namespace Roster.Features.Rosters.Operations
             return new()
             {
                 EmployeesCount = users.Count,
-                TotalMinutesBilled = (int)roster.Shifts.Sum(x => x.TotalHours ?? 0),
+                TotalMinutesBilled = roster.Shifts.Sum(x => x.TotalMinutes ?? 0),
                 TotalRosterCost = roster.Shifts.Sum(x => x.TotalCost ?? 0)
             };
         }

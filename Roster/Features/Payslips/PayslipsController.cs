@@ -16,12 +16,8 @@ namespace Rosters.Features.Payslips
         {
             _mediator = mediator;
         }
-        [HttpPost] //Creates new resources
-        public async Task<IActionResult> CreatePayslip([FromBody] CreatePayslip request)
-        {
-            var response = await _mediator.Send(request);
-            return Ok(response);
-        }
+
+
         [HttpGet("{PayslipId}")]
         public async Task<IActionResult> GetPayslip(GetPayslip request)
         {

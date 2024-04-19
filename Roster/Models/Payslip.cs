@@ -15,7 +15,7 @@ public partial class Payslip
 
     public DateTime PaymentDate { get; set; }
 
-    public decimal? TotalHours { get; set; }
+    public int? TotalMinutes { get; set; }
 
     public decimal? GrossIncome { get; set; }
 
