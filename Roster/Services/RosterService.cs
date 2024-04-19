@@ -66,7 +66,8 @@ namespace Roster.Services
             await _context.SaveChangesAsync();
             return true;
         }
-            DateTime LastDateInRoster(Roster.Models.Roster roster)
+        
+        public DateTime LastDateInRoster(Roster.Models.Roster roster)
         {
             var days = 7;
             //switch (Duration)

@@ -29,7 +29,7 @@ namespace Rosters.Features.Rosters
         public async Task<IActionResult> UpdateRoster(UpdateRoster request)
         {
             var response = await _mediator.Send(request);
-            if(response == null) return NotFound();
+            if (response == null) return NotFound();
             return Ok(response);
         }
 
@@ -47,10 +47,25 @@ namespace Rosters.Features.Rosters
             if (response == null) return NotFound();
             return Ok(response);
         }
+
         [HttpDelete("{RosterId}/shifts/{ShiftId}")]
         public async Task<IActionResult> DeleteShift(DeleteShift request)
         {
             var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpPost("{RosterId}/payslips")]
+        public async Task<IActionResult> CreatePayslips(CreatePayslips request)
+        {
+            var response = await _mediator.Send(request);
+            if (response == null)
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Roster is closed!",
+                    Status = StatusCodes.Status400BadRequest
+                });
+
             return Ok(response);
         }
     }
