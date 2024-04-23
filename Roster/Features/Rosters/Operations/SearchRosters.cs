@@ -39,6 +39,8 @@ namespace Roster.Features.Rosters.Operations
                 .Take(request.PageSize)
                 .Select(x => new GetRosterResponse
                 {
+                    RosterId = x.RosterId,
+                    LocationId = x.LocationId,
                     StartingWeek = x.StartingWeek,
                 })
                 .ToList();

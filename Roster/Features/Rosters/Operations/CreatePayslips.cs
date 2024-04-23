@@ -57,7 +57,7 @@ namespace Roster.Features.Rosters.Operations
                     GrossIncome = grossIncome,
                     TaxAmount = taxAmount,
                     NetIncome = grossIncome - taxAmount,
-
+                    Shifts = userShifts.Select(x => x).ToList()
                 };
 
                 _context.Payslips.Add(payslip);

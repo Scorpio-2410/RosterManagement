@@ -29,6 +29,8 @@ namespace Roster.Features.Rosters.Operations
         {
             var r = _context.Rosters.SingleOrDefault(x => x.RosterId == request.RosterId);
             if (r == null) return null;
+            if (r.IsLocked == true)
+                throw new ArgumentOutOfRangeException(nameof(r.IsLocked), "Roster is locked!");
 
             r.StartingWeek = request.Payload.StartingWeek;
             
@@ -36,6 +38,8 @@ namespace Roster.Features.Rosters.Operations
 
             return new()
             {
+                RosterId = r.RosterId,
+                LocationId = r.LocationId,
                 StartingWeek = r.StartingWeek
             };
         }

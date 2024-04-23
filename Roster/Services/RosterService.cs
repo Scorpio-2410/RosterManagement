@@ -12,6 +12,9 @@ namespace Roster.Services
             _context = context;
         }
 
+        // Implement delete method for Roster
+
+
         public async Task<(Roster.Models.Roster, Shift shift)> AddShift(int rosterId, int userId, DateTime startAt, DateTime endAt)
         {
             var roster = _context.Rosters
@@ -41,6 +44,10 @@ namespace Roster.Services
             if (roster.Shifts.Where(x => x.UserId == userId).Sum(x => (x.TotalMinutes ?? 0) / 60) + (endAt - startAt).Hours
                 > 20)
                 throw new ArgumentOutOfRangeException(nameof(userId), "Cant work more than 8 hours in roster!");
+            
+            // Business Rule 6: a shift cannot be added to a locked roster 
+            if (roster.IsLocked == true)
+                throw new ArgumentOutOfRangeException(nameof(roster.IsLocked), "Roster is locked!");
 
             var shift = new Shift
             {
@@ -58,10 +65,16 @@ namespace Roster.Services
             return (roster, shift);
         }
 
-        public async Task<bool> RemoveShift(int shiftId)
+        public async Task<bool> RemoveShift(int rosterId, int shiftId)
         {
+            var roster = _context.Rosters.Include(x => x.Shifts).SingleOrDefault(x => x.RosterId == rosterId);
             var shift = await _context.Shifts.FindAsync(shiftId);
             if (shift == null) throw new ArgumentNullException(nameof(shiftId), "Shift does not exist!");
+
+            // Business Rule: a shift cannot be removed to a locked roster
+            if (roster.IsLocked == true)
+                throw new ArgumentOutOfRangeException(nameof(roster.IsLocked), "Roster is locked!");
+
             _context.Shifts.Remove(shift);
             await _context.SaveChangesAsync();
             return true;

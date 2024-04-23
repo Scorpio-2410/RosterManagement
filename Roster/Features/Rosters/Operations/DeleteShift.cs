@@ -6,7 +6,8 @@ namespace Roster.Features.Rosters.Operations
 {
     public class DeleteShift : IRequest<bool>
     {
-        [FromRoute] public int ShiftId { get; set; }
+        public int RosterId { get; set; }
+        public int ShiftId { get; set; }
     }
 
     public class DeleteShiftHandler : IRequestHandler<DeleteShift, bool>
@@ -22,7 +23,7 @@ namespace Roster.Features.Rosters.Operations
         {
             try
             {
-                var shift = await _rosterService.RemoveShift(request.ShiftId);
+                var shift = await _rosterService.RemoveShift(request.RosterId, request.ShiftId);
                 return true;
             }
             catch (Exception e)

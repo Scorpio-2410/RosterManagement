@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Roster.Models;
 
 namespace Rosters.Features.Rosters.Operations
@@ -25,10 +26,17 @@ namespace Rosters.Features.Rosters.Operations
 
         public async Task<CreateRosterResponse> Handle(CreateRoster request, CancellationToken cancellationToken)
         {
+            
+            
+            var ExistingRosterCheck = await _context.Rosters.AnyAsync(x => x.LocationId == request.LocationId && x.StartingWeek == request.StartingWeek);
+
+            if (ExistingRosterCheck)
+                throw new InvalidOperationException("Identical roster cannot be created");
+
             var roster = new Roster.Models.Roster()
             {
                 LocationId = request.LocationId,
-                StartingWeek = request.StartingWeek,
+                StartingWeek = request.StartingWeek
             };
 
             await _context.Rosters.AddAsync(roster, cancellationToken);

@@ -21,10 +21,6 @@ namespace Rosters.Features.Rosters
             return Ok(response);
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchRosters([FromBody] SearchRosters request) =>
-            Ok(await _mediator.Send(request));
-
         [HttpPut("{RosterId}")]
         public async Task<IActionResult> UpdateRoster(UpdateRoster request)
         {
@@ -32,6 +28,11 @@ namespace Rosters.Features.Rosters
             if (response == null) return NotFound();
             return Ok(response);
         }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchRosters([FromBody] SearchRosters request) =>
+            Ok(await _mediator.Send(request));
+
 
         [HttpPost("{RosterId}/shifts")]
         public async Task<IActionResult> CreateShift(CreateShift request)
