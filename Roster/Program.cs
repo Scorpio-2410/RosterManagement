@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Roster.Services;
 using Roster.Models;
+using FluentValidation;
+using MediatR;
+using Roster.Infrastructure.Middlewares;
+using Roster.Infrastructure.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +33,15 @@ builder.Services.AddDbContext<RostersContext>((options) =>
 //Registers MediatR services in the application's dependency injection container.
 builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
 
+// fluent validation
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.Decorate(typeof(IRequestHandler<,>), typeof(FluentValidationPipeline<,>));
+
+
 // application services
 builder.Services.AddTransient<RosterService>();
+
+
 
 var app = builder.Build();
 
@@ -45,6 +56,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.MapControllers();
 
 app.Run();

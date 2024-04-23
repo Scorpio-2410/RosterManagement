@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Roster.Models;
 
 namespace Rosters.Features.Locations.Operations
@@ -8,20 +9,32 @@ namespace Rosters.Features.Locations.Operations
     {
         public string Address1 { get; set; }
         public string? Address2 { get; set; }
-        public string? City { get; set; }
+        public string City { get; set; }
         public string State { get; set; }
-        public string? Country { get; set; }
+        public string Country { get; set; }
     }
 
     public class CreateLocationResponse
     {
         public int LocationId { get; set; }
     }
-    public class CreateLocationhandler : IRequestHandler<CreateLocation, CreateLocationResponse> //Takes request to create new location and returns reponse
+
+    public class CreateLocationValidator : AbstractValidator<CreateLocation>
+    {
+        public CreateLocationValidator()
+        {
+            RuleFor(x => x.Address1).NotEmpty();
+            RuleFor(x => x.City).NotEmpty();
+            RuleFor(x => x.State).NotEmpty();
+            RuleFor(x => x.Country).NotEmpty();
+        }
+    }
+
+    public class CreateLocationHandler : IRequestHandler<CreateLocation, CreateLocationResponse> //Takes request to create new location and returns reponse
     {
         private RostersContext _context;
 
-        public CreateLocationhandler(RostersContext context) //RosterDbContext to interact with database
+        public CreateLocationHandler(RostersContext context) //RosterDbContext to interact with database
         {
             _context = context;
 
