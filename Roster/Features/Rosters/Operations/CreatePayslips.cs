@@ -47,7 +47,7 @@ namespace Roster.Features.Rosters.Operations
         }
     }
 
-        public class CreatePayslipsHandler : IRequestHandler<CreatePayslips, CreatePayslipsResponse>
+    public class CreatePayslipsHandler : IRequestHandler<CreatePayslips, CreatePayslipsResponse>
     {
         readonly RostersContext _context;
         readonly RosterService _rosterService;

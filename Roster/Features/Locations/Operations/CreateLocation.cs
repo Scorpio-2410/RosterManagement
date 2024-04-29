@@ -37,8 +37,8 @@ namespace Rosters.Features.Locations.Operations
         public CreateLocationHandler(RostersContext context) //RosterDbContext to interact with database
         {
             _context = context;
-
         }
+
         public async Task<CreateLocationResponse> Handle(CreateLocation request, CancellationToken cancellationToken) //Business logic of creating a new locaiton
         {
             var location = new Location

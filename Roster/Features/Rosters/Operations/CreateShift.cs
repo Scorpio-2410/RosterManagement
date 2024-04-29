@@ -1,5 +1,6 @@
 ﻿
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,12 @@ namespace Roster.Features.Rosters.Operations
     {
         public int ShiftId { get; set; }
     }
+
+    public static class ShiftValidationErrorCodes
+    {
+        public const string DATES_DO_NOT_MATCH = "DATES_DO_NOT_MATCH";
+    }
+
 
     public class CreateShiftValidator : AbstractValidator<CreateShift>
     {
@@ -70,7 +77,11 @@ namespace Roster.Features.Rosters.Operations
 
             //Business rule 1
             if (Payload.StartAt.Date != Payload.EndAt.Date)
-                validationContext.AddFailure("Start and End Date of shift do not match!");
+                validationContext.AddFailure(new ValidationFailure()
+                {
+                    ErrorMessage = "Start and End Date of shift do not match!",
+                    ErrorCode = ShiftValidationErrorCodes.DATES_DO_NOT_MATCH
+                });
 
             //Business rule 2
             if (Payload.StartAt.Date < roster.StartingWeek.Date) 
