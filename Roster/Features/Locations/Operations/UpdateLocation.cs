@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Roster.Features.Locations.Shared;
 using Roster.Models;
@@ -18,6 +19,31 @@ namespace Roster.Features.Locations.Operations
         public string? City { get; set; }
         public string? State { get; set; }
         public string? Country { get; set; }
+    }
+
+    public class UpdateLocationValidator : AbstractValidator<UpdateLocation>
+    {
+        readonly RostersContext _context;
+        public UpdateLocationValidator(RostersContext context)
+        {
+            _context = context;
+
+            RuleLevelCascadeMode = CascadeMode.Stop;
+
+            RuleFor(x => x.LocationId)
+                .GreaterThan(0).WithMessage("Location id must be a number greater than 0!")
+                .Must(LocationMustExist).WithMessage("Location does not exit!");
+            RuleFor(x => x.Payload.Address1).NotEmpty();
+            RuleFor(x => x.Payload.City).NotEmpty();
+            RuleFor(x => x.Payload.State).NotEmpty();
+            RuleFor(x => x.Payload.Country).NotEmpty();
+        }
+
+        bool LocationMustExist(int locationId)
+        {
+            return _context.Locations.Any(x => x.LocationId == locationId);
+        }
+
     }
 
     public class UpdateLocationHandler : IRequestHandler<UpdateLocation, GetLocationResponse>

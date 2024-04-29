@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Roster.Features.Locations.Shared;
 using Roster.Features.Shared;
 using Roster.Models;
+using System.Data;
 
 namespace Roster.Features.Locations.Operations
 {
@@ -11,6 +13,21 @@ namespace Roster.Features.Locations.Operations
         public int PageSize { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
     }
+
+    public class SerachLocationValidator : AbstractValidator<SearchLocations>
+    {
+        readonly RostersContext _context;
+
+        public SerachLocationValidator(RostersContext context)
+        {
+            _context = context;
+
+            RuleFor(x => x.State).NotEmpty();
+            RuleFor(x => x.PageSize).GreaterThanOrEqualTo(10);
+            RuleFor(x => x.PageNumber).GreaterThanOrEqualTo(1);
+        }
+    }
+
 
     public class SearchLocationsHandler : IRequestHandler<SearchLocations, SearchResponse<GetLocationResponse>>
     {

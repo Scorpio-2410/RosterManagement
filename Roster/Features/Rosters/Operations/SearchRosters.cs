@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Roster.Features.Rosters.Shared;
 using Roster.Features.Shared;
 using Roster.Models;
@@ -10,6 +11,21 @@ namespace Roster.Features.Rosters.Operations
         public DateTime StartingWeek { get; set; }
         public int PageSize { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
+    }
+
+    public class SearchRostersValidator : AbstractValidator<SearchRosters>
+    {
+        readonly RostersContext _context;
+
+        public SearchRostersValidator(RostersContext context)
+        {
+            _context = context;
+
+            RuleLevelCascadeMode = CascadeMode.Stop;
+
+            RuleFor(x => x.StartingWeek).NotEmpty()
+                .NotEqual(DateTime.MinValue).WithMessage("Enter a validate starting week");
+        }
     }
 
     public class SearchRosterHandler : IRequestHandler<SearchRosters, SearchResponse<GetRosterResponse>>

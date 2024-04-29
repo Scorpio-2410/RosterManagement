@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Roster.Models;
@@ -18,7 +19,35 @@ namespace Roster.Features.Rosters.Operations
         public decimal TotalRosterCost { get; set; }
     }
 
-    public class CreatePayslipsHandler : IRequestHandler<CreatePayslips, CreatePayslipsResponse>
+    public class CreatePayslipsValidator : AbstractValidator<CreatePayslips>
+    {
+        readonly RostersContext _context;
+
+        public CreatePayslipsValidator(RostersContext context)
+        {
+            _context = context;
+
+            RuleLevelCascadeMode = CascadeMode.Stop;
+
+            RuleFor(x => x.RosterId)
+                .GreaterThan(0)
+                .Must(RosterMustExist).WithMessage("Roster does not exist!")
+                .Must(IsRosterLocked).WithMessage("Roster is locked!");
+        }
+        bool RosterMustExist(int RosterId)
+        {
+            return _context.Rosters.Any(x => x.RosterId == RosterId);
+
+        }
+
+        bool IsRosterLocked(int RosterId)
+        {
+            return _context.Rosters.Any(x => x.RosterId == RosterId && !x.IsLocked);
+
+        }
+    }
+
+        public class CreatePayslipsHandler : IRequestHandler<CreatePayslips, CreatePayslipsResponse>
     {
         readonly RostersContext _context;
         readonly RosterService _rosterService;

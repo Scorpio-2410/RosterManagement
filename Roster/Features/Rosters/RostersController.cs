@@ -21,14 +21,6 @@ namespace Rosters.Features.Rosters
             return Ok(response);
         }
 
-        [HttpPut("{RosterId}")]
-        public async Task<IActionResult> UpdateRoster(UpdateRoster request)
-        {
-            var response = await _mediator.Send(request);
-            if (response == null) return NotFound();
-            return Ok(response);
-        }
-
         [HttpPost("search")]
         public async Task<IActionResult> SearchRosters([FromBody] SearchRosters request) =>
             Ok(await _mediator.Send(request));

@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Roster.Models;
+using System.Data;
 
 namespace Roster1.Features.Users.Operations
 {
@@ -17,6 +19,19 @@ namespace Roster1.Features.Users.Operations
     public class CreateUserResponse
     {
         public int UserId { get; set; }
+    }
+
+    public class CreateUserValidator : AbstractValidator<CreateUser>
+    {
+        public CreateUserValidator()
+        {
+            RuleLevelCascadeMode = CascadeMode.Stop;
+
+            RuleFor(x => x.FirstName).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
+            RuleFor(x => x.LastName).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
+            RuleFor(x => x.Role).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
+            RuleFor(x => x.Availability).Matches("^[a-zA-Z'\\s]+$");
+        }
     }
     public class CreateUserhandler : IRequestHandler<CreateUser, CreateUserResponse>
     {
