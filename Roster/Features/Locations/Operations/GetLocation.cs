@@ -12,27 +12,6 @@ namespace Roster.Features.Locations.Operations
         [FromRoute] public int LocationId { get; set; }
     }
 
-    public class GetLocationValidator : AbstractValidator<GetLocation>
-    {
-        readonly RostersContext _context;
-
-        public GetLocationValidator(RostersContext context)
-        {
-            _context = context;
-
-            RuleLevelCascadeMode = CascadeMode.Stop;
-
-            RuleFor(x => x.LocationId)
-                .GreaterThan(0).WithMessage("Location id must be a number greater than 0!")
-                .Must(LocationMustExist).WithMessage("Location does not exit!");
-
-        }
-        bool LocationMustExist(int locationId)
-        {
-            return _context.Locations.Any(x => x.LocationId == locationId);
-        }
-    }
-
     public class GetLocationHandler : IRequestHandler<GetLocation, GetLocationResponse>
     {
         readonly RostersContext _context;

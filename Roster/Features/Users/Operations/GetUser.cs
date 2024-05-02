@@ -12,25 +12,6 @@ namespace Roster1.Features.Users.Operations
         [FromRoute] public int UserId { get; set; }
     }
 
-    public class GetUserValidator : AbstractValidator<GetUser>
-    {
-        readonly RostersContext _context;
-        public GetUserValidator(RostersContext context)
-        {
-            _context = context;
-
-            RuleFor(x => x.UserId)
-                .GreaterThan(0).WithMessage("User id must be a number greater than 0")
-                .Must(UserMustExist).WithMessage("User does not exit!");
-        }
-
-        bool UserMustExist (int UserId)
-        {
-            return _context.Users.Any(x => x.UserId == UserId);
-        }
-
-    }
-
     public class GetUserhandler : IRequestHandler<GetUser, GetUserResponse>
     {
         readonly RostersContext _context; 

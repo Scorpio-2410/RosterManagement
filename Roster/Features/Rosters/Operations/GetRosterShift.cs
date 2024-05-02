@@ -11,26 +11,6 @@ namespace Roster.Features.Rosters.Operations
         [FromRoute] public int RosterId { get; set; }
     }
 
-    public class GetRosterShiftsValidator : AbstractValidator<GetRosterShifts>
-    {
-        readonly RostersContext _context;
-
-        public GetRosterShiftsValidator(RostersContext context)
-        {
-            _context = context;
-
-            RuleLevelCascadeMode = CascadeMode.Stop;
-
-            RuleFor(x => x.RosterId)
-                .GreaterThan(0)
-                .Must(RosterMustExist).WithMessage("Roster does not exist!");
-        }
-        bool RosterMustExist(int RosterId)
-        {
-            return _context.Rosters.Any(x => x.RosterId == RosterId);
-        }
-    }
-
     public class GetRosterShiftHandler : IRequestHandler<GetRosterShifts, List<GetShiftResponse>>
     {
         readonly RostersContext _context;

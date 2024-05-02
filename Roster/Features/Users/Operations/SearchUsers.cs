@@ -13,20 +13,6 @@ namespace Roster.Features.Users.Operations
         public int PageNumber { get; set; } = 1;
     }
 
-    public class SerachUsersValidator : AbstractValidator<SearchUsers>
-    {
-        readonly RostersContext _context;
-
-        public SerachUsersValidator(RostersContext context)
-        {
-            _context = context;
-
-            RuleFor(x => x.LastName).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
-            RuleFor(x => x.PageSize).GreaterThanOrEqualTo(10);
-            RuleFor(x => x.PageNumber).GreaterThanOrEqualTo(1);
-        }
-    }
-
     public class SearchUsersHandler : IRequestHandler<SearchUsers, SearchResponse<GetUserResponse>>
     {
         readonly RostersContext _context;

@@ -34,6 +34,11 @@ namespace Roster.Features.Rosters.Operations
     public static class ShiftValidationErrorCodes
     {
         public const string DATES_DO_NOT_MATCH = "DATES_DO_NOT_MATCH";
+        public const string DATE_NOT_IN_ROSTER = "DATE_NOT_IN_ROSTER";
+        public const string USER_CANNOT_WORK_AGAIN_IN_SHIFT = "USER_CANNOT_WORK_AGAIN_IN_SHIFT";
+        public const string USER_CANNOT_WORK_PAST_MAXIMUM_HOURS = "USER_CANNOT_WORK_PAST_MAXIMUM_HOURS";
+        public const string ROSTER_IS_LOCKED = "ROSTER_IS_LOCKED";
+
     }
 
 
@@ -84,29 +89,47 @@ namespace Roster.Features.Rosters.Operations
                 });
 
             //Business rule 2
-            if (Payload.StartAt.Date < roster.StartingWeek.Date) 
-                validationContext.AddFailure("Start date must be with in roster!");
+            if (Payload.StartAt.Date < roster.StartingWeek.Date)
+                validationContext.AddFailure(new ValidationFailure()
+                {
+                    ErrorMessage = "Start date must be with in roster!",
+                    ErrorCode = ShiftValidationErrorCodes.DATE_NOT_IN_ROSTER
+                });
 
             //Business rule 3
-            if (Payload.StartAt > IsLastDateInRoster(roster)) 
-                validationContext.AddFailure("Start date must be with in roster!");
+            if (Payload.StartAt > LastDateInRoster(roster))
+                validationContext.AddFailure(new ValidationFailure()
+                {
+                    ErrorMessage = "Start date must be with in roster!",
+                    ErrorCode = ShiftValidationErrorCodes.DATE_NOT_IN_ROSTER
 
-            //Busines rule 4
-            if (roster.Shifts.Any(s => s.UserId == Payload.UserId && s.StartAt.Date == Payload.StartAt.Date)) 
-                validationContext.AddFailure("Cant work twice on the same day!");
+                });
+            //Business rule 4
+            if (roster.Shifts.Any(s => s.UserId == Payload.UserId && s.StartAt.Date == Payload.StartAt.Date))
+                validationContext.AddFailure(new ValidationFailure()
+                {
+                    ErrorMessage = "Cant work twice on the same day!",
+                    ErrorCode = ShiftValidationErrorCodes.USER_CANNOT_WORK_AGAIN_IN_SHIFT
+                });
 
             //Business rule 5
-            if (roster.Shifts.Where(x => x.UserId == Payload.UserId).Sum(x => (x.TotalMinutes ?? 0) / 60) + (Payload.EndAt - Payload.StartAt).Hours > 8) 
-                validationContext.AddFailure("Cant work more than 8 hours in roster!");
-
+            if (roster.Shifts.Where(x => x.UserId == Payload.UserId).Sum(x => (x.TotalMinutes ?? 0) / 60) + (Payload.EndAt - Payload.StartAt).Hours > 8)
+                validationContext.AddFailure(new ValidationFailure() 
+                {
+                    ErrorMessage = "Cant work more than 8 hours in roster!",
+                    ErrorCode = ShiftValidationErrorCodes.USER_CANNOT_WORK_PAST_MAXIMUM_HOURS
+                });
             //Business rule 6
-            if (roster.IsLocked == true) 
-                validationContext.AddFailure("Cannot add shift to locked Roster!");
-
+            if (roster.IsLocked == true)
+                validationContext.AddFailure(new ValidationFailure()
+                {
+                    ErrorMessage = "Cannot add shift to locked Roster!",
+                    ErrorCode = ShiftValidationErrorCodes.ROSTER_IS_LOCKED
+                });
             return true;
         }
 
-        public DateTime IsLastDateInRoster(Models.Roster roster)
+        public DateTime LastDateInRoster(Models.Roster roster)
         {
             var days = 7;
             var date = roster.StartingWeek.Date.AddDays(days).AddMicroseconds(-1);

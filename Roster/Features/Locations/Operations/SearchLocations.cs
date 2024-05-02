@@ -14,21 +14,6 @@ namespace Roster.Features.Locations.Operations
         public int PageNumber { get; set; } = 1;
     }
 
-    public class SerachLocationValidator : AbstractValidator<SearchLocations>
-    {
-        readonly RostersContext _context;
-
-        public SerachLocationValidator(RostersContext context)
-        {
-            _context = context;
-
-            RuleFor(x => x.State).NotEmpty();
-            RuleFor(x => x.PageSize).GreaterThanOrEqualTo(10);
-            RuleFor(x => x.PageNumber).GreaterThanOrEqualTo(1);
-        }
-    }
-
-
     public class SearchLocationsHandler : IRequestHandler<SearchLocations, SearchResponse<GetLocationResponse>>
     {
         readonly RostersContext _context;
