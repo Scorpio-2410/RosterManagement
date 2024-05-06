@@ -1,5 +1,4 @@
-﻿
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +39,6 @@ namespace Roster.Features.Rosters.Operations
         public const string ROSTER_IS_LOCKED = "ROSTER_IS_LOCKED";
 
     }
-
 
     public class CreateShiftValidator : AbstractValidator<CreateShift>
     {

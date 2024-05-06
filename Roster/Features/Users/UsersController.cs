@@ -20,13 +20,6 @@ namespace Roster1.Features.Users
             var response = await _mediator.Send(request);
             return Ok(response);
         }
-        [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetUser(GetUser request)
-        {
-            var response = await _mediator.Send(request);
-            if (response == null) return NotFound();
-            return Ok(response);
-        }
 
         [HttpPost("search")]
         public async Task<IActionResult> SearchUsers([FromBody] SearchUsers request) =>

@@ -107,20 +107,30 @@ namespace Roster.Tests
         }
 
         [Test]
-        [TestCase("2024-04-30T08:00:00", "2024-04-30T16:00:00", ShiftValidationErrorCodes.USER_CANNOT_WORK_AGAIN_IN_SHIFT)]
-        public async Task CreateShiftValidatorTest_UserValidation_NegativePaths(string shiftStart, string shiftEnd, string errorCode)
+        [TestCase("2024-04-29T12:00:00", "2024-04-29T17:00:00", ShiftValidationErrorCodes.USER_CANNOT_WORK_AGAIN_IN_SHIFT)]
+        [TestCase("2024-05-02T12:00:00", "2024-05-02T17:00:00", ShiftValidationErrorCodes.USER_CANNOT_WORK_PAST_MAXIMUM_HOURS)]
+        [TestCase("2024-05-02T12:00:00", "2024-05-02T17:00:00", ShiftValidationErrorCodes.ROSTER_IS_LOCKED)]
+        // Starting week, 
+        public async Task CreateShiftValidatorTest_UserShValidation_NegativePaths(string shiftStart, string shiftEnd, string errorCode)
         {
 
             //setup
             var roster = new Models.Roster //object of type Roster
             {
                 RosterId = 1,
+                IsLocked = true,
                 Shifts = new List<Shift> //List of shift
                 {
+                    
                     new() //creates the existing shift
                     {
-                        RosterId = 1, UserId = 1, StartAt = DateTime.Parse("2024-04-30T08:00:00"),
-                        EndAt = DateTime.Parse("2024-04-30T16:00:00")
+                        RosterId = 1, UserId = 1, ShiftId = 1, StartAt = DateTime.Parse("2024-04-29T09:00:00"),
+                        EndAt = DateTime.Parse("2024-04-29T12:00:00"), TotalMinutes = 180
+                    },
+                    new() //creates the existing shift
+                    {
+                        RosterId = 1, UserId = 1, ShiftId = 2, StartAt = DateTime.Parse("2024-05-01T09:00:00"),
+                        EndAt = DateTime.Parse("2024-05-01T14:00:00"), TotalMinutes = 300
                     }
                 }
             };

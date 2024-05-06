@@ -6,7 +6,7 @@ using Rosters.Features.Locations.Operations;
 namespace Roster.Tests
 {
     [TestFixture]
-    public class LocationTests
+    public class CreateLocationTests
     {
         private Mock<RostersContext> _dbContext;
 
