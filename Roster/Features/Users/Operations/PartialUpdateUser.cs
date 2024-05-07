@@ -30,14 +30,21 @@ namespace Roster.Features.Users.Operations
         {
             _context = context;
             _modelValidator = modelValidator;
+            RuleLevelCascadeMode = CascadeMode.Stop;
             RuleFor(x => x.UserId)
-                .GreaterThan(0).WithMessage("User Id must be greater than 0");
+                .GreaterThan(0).WithMessage("User Id must be greater than 0")
+                .Must(UserMustExist).WithMessage("User has to exist in database!");
             RuleFor(x => x.Payload).Must(IsPayloadValid).WithMessage("Payload validation failed");
             _modelValidator = modelValidator;
 
         }
 
-        private bool IsPayloadValid(PartialUpdateUser request, JsonPatchDocument<PartialUserModel> document, ValidationContext<PartialUpdateUser> validationContext)
+        bool UserMustExist(int UserId)
+        {
+            return _context.Users.Any(x => x.UserId == UserId);
+        }
+
+        bool IsPayloadValid(PartialUpdateUser request, JsonPatchDocument<PartialUserModel> document, ValidationContext<PartialUpdateUser> validationContext)
         {
             var u = _context.Users.SingleOrDefault(x => x.UserId == request.UserId);
             if (u == null) return false;

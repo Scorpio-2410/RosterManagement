@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Moq;
 using Moq.EntityFrameworkCore;
 using Roster.Features.Locations.Operations;
@@ -8,7 +7,7 @@ using Roster.Models;
 namespace Roster.Tests
 {
     [TestFixture]
-    public class PartialUpdateLocationTest
+    public class PartialUpdateLocationTests
     {
         private Mock<RostersContext> _dbContext;
         private PartialLocationModelValidator _modelValidator;
