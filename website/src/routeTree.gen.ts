@@ -13,19 +13,15 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RostersIndexImport } from './routes/rosters.index'
 
 // Create Virtual Routes
 
-const RosterLazyImport = createFileRoute('/roster')()
 const LoginLazyImport = createFileRoute('/login')()
 const IndexLazyImport = createFileRoute('/')()
+const RostersIdLazyImport = createFileRoute('/rosters/$id')()
 
 // Create/Update Routes
-
-const RosterLazyRoute = RosterLazyImport.update({
-  path: '/roster',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/roster.lazy').then((d) => d.Route))
 
 const LoginLazyRoute = LoginLazyImport.update({
   path: '/login',
@@ -36,6 +32,16 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const RostersIndexRoute = RostersIndexImport.update({
+  path: '/rosters/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/rosters.index.lazy').then((d) => d.Route))
+
+const RostersIdLazyRoute = RostersIdLazyImport.update({
+  path: '/rosters/$id',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/rosters.$id.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
@@ -49,8 +55,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginLazyImport
       parentRoute: typeof rootRoute
     }
-    '/roster': {
-      preLoaderRoute: typeof RosterLazyImport
+    '/rosters/$id': {
+      preLoaderRoute: typeof RostersIdLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/rosters/': {
+      preLoaderRoute: typeof RostersIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -61,7 +71,8 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   LoginLazyRoute,
-  RosterLazyRoute,
+  RostersIdLazyRoute,
+  RostersIndexRoute,
 ])
 
 /* prettier-ignore-end */

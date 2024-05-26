@@ -6,15 +6,15 @@ export const Route = createRootRoute({
     <>
       <div className="p-2 flex justify-between">
         <div className='flex gap-2'>
-          <Link to="/" className="[&.active]:font-bold">
+          <Link to="/" className="[&.active]:font-bold text-blue-400">
             Home
           </Link>{' '}
-          <Link to="/roster" className="[&.active]:font-bold">
-            Roster
+          <Link to="/rosters" className="[&.active]:font-bold text-blue-400">
+            Rosters
           </Link>
         </div>
         <div>
-          <Link to="/login" className="[&.active]:font-bold">
+          <Link to="/login" className="[&.active]:font-bold text-blue-400">
             Login
           </Link>
         </div>  
@@ -23,5 +23,5 @@ export const Route = createRootRoute({
       <Outlet />
       <TanStackRouterDevtools />
     </>
-  ),
+  )
 })
