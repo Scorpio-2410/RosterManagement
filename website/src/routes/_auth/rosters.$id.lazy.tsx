@@ -1,11 +1,12 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 
-export const Route = createLazyFileRoute('/rosters/$id')({
+export const Route = createLazyFileRoute('/_auth/rosters/$id')({
   component: Roster
 })
 
 function Roster(){
+
   return(
-    <div>Hello /rosters/$id!</div>
+    <div>This Roster is $id</div>
   )
 }

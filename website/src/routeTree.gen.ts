@@ -13,13 +13,15 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as RostersIndexImport } from './routes/rosters.index'
+import { Route as AuthImport } from './routes/_auth'
+import { Route as AuthRostersIndexImport } from './routes/_auth/rosters.index'
 
 // Create Virtual Routes
 
 const LoginLazyImport = createFileRoute('/login')()
 const IndexLazyImport = createFileRoute('/')()
-const RostersIdLazyImport = createFileRoute('/rosters/$id')()
+const AuthDashboardLazyImport = createFileRoute('/_auth/dashboard')()
+const AuthRostersIdLazyImport = createFileRoute('/_auth/rosters/$id')()
 
 // Create/Update Routes
 
@@ -28,20 +30,36 @@ const LoginLazyRoute = LoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const RostersIndexRoute = RostersIndexImport.update({
-  path: '/rosters/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/rosters.index.lazy').then((d) => d.Route))
+const AuthDashboardLazyRoute = AuthDashboardLazyImport.update({
+  path: '/dashboard',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/dashboard.lazy').then((d) => d.Route),
+)
 
-const RostersIdLazyRoute = RostersIdLazyImport.update({
+const AuthRostersIndexRoute = AuthRostersIndexImport.update({
+  path: '/rosters/',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/rosters.index.lazy').then((d) => d.Route),
+)
+
+const AuthRostersIdLazyRoute = AuthRostersIdLazyImport.update({
   path: '/rosters/$id',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/rosters.$id.lazy').then((d) => d.Route))
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/rosters.$id.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -51,17 +69,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/_auth': {
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       preLoaderRoute: typeof LoginLazyImport
       parentRoute: typeof rootRoute
     }
-    '/rosters/$id': {
-      preLoaderRoute: typeof RostersIdLazyImport
-      parentRoute: typeof rootRoute
+    '/_auth/dashboard': {
+      preLoaderRoute: typeof AuthDashboardLazyImport
+      parentRoute: typeof AuthImport
     }
-    '/rosters/': {
-      preLoaderRoute: typeof RostersIndexImport
-      parentRoute: typeof rootRoute
+    '/_auth/rosters/$id': {
+      preLoaderRoute: typeof AuthRostersIdLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/rosters/': {
+      preLoaderRoute: typeof AuthRostersIndexImport
+      parentRoute: typeof AuthImport
     }
   }
 }
@@ -70,9 +96,12 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
+  AuthRoute.addChildren([
+    AuthDashboardLazyRoute,
+    AuthRostersIdLazyRoute,
+    AuthRostersIndexRoute,
+  ]),
   LoginLazyRoute,
-  RostersIdLazyRoute,
-  RostersIndexRoute,
 ])
 
 /* prettier-ignore-end */
