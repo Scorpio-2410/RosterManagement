@@ -26,7 +26,6 @@ function Index() {
           </div>
         </div>
       </div>
-
       <div className='w-full p-8 bg-slate-300'>
         <div className='mb-8 flex flex-col lg:flex-row items-center lg:justify-between'>
           <div className='lg:w-1/2 p-4'>
@@ -40,7 +39,6 @@ function Index() {
           </div>
         </div>
       </div>
-
       <div className='w-full p-8 bg-blue-400'>
         <div className='mb-8'>
           <h1 className='flex justify-center text-3xl font-semibold mb-4'>Benefits</h1>
@@ -85,7 +83,6 @@ function Index() {
           </div>
         </div>
       </div>
-
       <div className='w-full p-8 bg-blue-400'>
         <div className='mb-8'>
           <h1 className='flex justify-center text-3xl font-semibold mb-4'>Here Are the Features!</h1>

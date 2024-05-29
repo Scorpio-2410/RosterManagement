@@ -20,6 +20,9 @@ import { Route as AuthRostersIndexImport } from './routes/_auth/rosters.index'
 
 const LoginLazyImport = createFileRoute('/login')()
 const IndexLazyImport = createFileRoute('/')()
+const AuthUsersLazyImport = createFileRoute('/_auth/users')()
+const AuthProfileLazyImport = createFileRoute('/_auth/profile')()
+const AuthLocationsLazyImport = createFileRoute('/_auth/locations')()
 const AuthDashboardLazyImport = createFileRoute('/_auth/dashboard')()
 const AuthRostersIdLazyImport = createFileRoute('/_auth/rosters/$id')()
 
@@ -39,6 +42,23 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const AuthUsersLazyRoute = AuthUsersLazyImport.update({
+  path: '/users',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() => import('./routes/_auth/users.lazy').then((d) => d.Route))
+
+const AuthProfileLazyRoute = AuthProfileLazyImport.update({
+  path: '/profile',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() => import('./routes/_auth/profile.lazy').then((d) => d.Route))
+
+const AuthLocationsLazyRoute = AuthLocationsLazyImport.update({
+  path: '/locations',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/locations.lazy').then((d) => d.Route),
+)
 
 const AuthDashboardLazyRoute = AuthDashboardLazyImport.update({
   path: '/dashboard',
@@ -81,6 +101,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardLazyImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/locations': {
+      preLoaderRoute: typeof AuthLocationsLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/profile': {
+      preLoaderRoute: typeof AuthProfileLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/users': {
+      preLoaderRoute: typeof AuthUsersLazyImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/rosters/$id': {
       preLoaderRoute: typeof AuthRostersIdLazyImport
       parentRoute: typeof AuthImport
@@ -98,6 +130,9 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AuthRoute.addChildren([
     AuthDashboardLazyRoute,
+    AuthLocationsLazyRoute,
+    AuthProfileLazyRoute,
+    AuthUsersLazyRoute,
     AuthRostersIdLazyRoute,
     AuthRostersIndexRoute,
   ]),

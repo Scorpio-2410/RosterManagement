@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createLazyFileRoute, useRouter } from '@tanstack/react-router';
-import { isAuthenticated, signIn, signOut } from '../utils/auth';
+import { isAuthenticated, signIn } from '../utils/auth';
 
 export const Route = createLazyFileRoute('/login')({
   component: Login,
@@ -8,10 +8,22 @@ export const Route = createLazyFileRoute('/login')({
 
 function Login() {
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  if (isAuthenticated()) {
+    router.navigate({ to: '/dashboard' });
+    return null;
+  }
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
+  };
+
+  const handleSignIn = async () => {
+    await signIn();
+    localStorage.setItem('username', username);
+    router.navigate({ to: '/dashboard' });
   };
 
   return (
@@ -27,7 +39,9 @@ function Login() {
             type='text' 
             id='username' 
             className='border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600' 
-            placeholder='Enter Username' 
+            placeholder='Enter Username'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)} 
           />
         </div>
         <div className='mt-3'>
@@ -55,32 +69,14 @@ function Login() {
           </div>
         </div>
         <div className='mt-5'>
-          {isAuthenticated() ? (
-            <>
-              <p>Hello user!</p>
-              <button
-                onClick={async () => {
-                  signOut();
-                  router.invalidate();
-                }}
-                className='border-2 border-blue-400 bg-blue-400 text-white w-full py-1 rounded-md hover:bg-transparent hover:text-blue-400 font-semibold'
-              >
-                Sign out
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={async () => {
-                signIn();
-                router.invalidate();
-              }}
-              className='border-2 border-blue-400 bg-blue-400 text-white w-full py-1 rounded-md hover:bg-transparent hover:text-blue-400 font-semibold'
-            >
-              Sign in
-            </button>
-          )}
+          <button
+            onClick={handleSignIn}
+            className='border-2 border-blue-400 bg-blue-400 text-white w-full py-1 rounded-md hover:bg-transparent hover:text-blue-400 font-semibold'
+          >
+            Sign in
+          </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
