@@ -1,5 +1,6 @@
 import { Link, createLazyFileRoute, useLoaderData } from '@tanstack/react-router'
 
+
 export const Route = createLazyFileRoute('/_auth/rosters/')({
   component: Rosters
 })
@@ -10,7 +11,6 @@ function Rosters(){
   return(
     <div>
       <ul>
-        {/* i maps to roster */}
         {context.result.map((i) => (
           <li key={i.rosterId}>
             <Link to="/rosters/$id" params={{id: String(i.rosterId)}}>

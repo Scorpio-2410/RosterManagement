@@ -1,13 +1,6 @@
 import { createFileRoute} from '@tanstack/react-router'
 import { AppSettings } from '@/utils/configs'
 
-// public ICollection<TResult> Result { get; set; }
-
-// public int RosterId { get; set; }
-// public int LocationId { get; set; }
-// public DateTime StartingWeek { get; set; }
-
-
 type RosterResponse = {
   rosterId: number
   locationId: number
