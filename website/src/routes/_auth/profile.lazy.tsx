@@ -1,5 +1,12 @@
+import Hero from '@/components/hero'
 import { createLazyFileRoute } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/_auth/profile')({
-  component: () => <div>This is the profile page!</div>
+  component: Profile
 })
+
+function Profile(){
+  return(
+    <Hero/>
+  )
+}

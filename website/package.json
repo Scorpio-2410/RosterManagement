@@ -13,7 +13,8 @@
     "@tanstack/react-form": "^0.20.2",
     "@tanstack/react-query": "^5.40.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.5"
   },
   "devDependencies": {
     "@tanstack/router-devtools": "^1.31.26",
