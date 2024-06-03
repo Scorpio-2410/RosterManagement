@@ -1,21 +1,51 @@
 import { useForm } from "react-hook-form";
+import Select, { SingleValue } from "react-select";
+import { useEffect } from "react";
 
-interface CreateFormProps {
-  rosterId: string;
-}
+type CreateFormProps = {
+  rosterId: number;
+};
+
+type UserOption = {
+  value: string;
+  label: string;
+};
+
+const users: UserOption[] = [
+  { value: "1", label: "Nabidul Islam" },
+  { value: "2", label: "John Cena" },
+  { value: "3", label: "Ben Green" },
+];
 
 function CreateForm({ rosterId }: CreateFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue,
+    watch,
+    reset,
+    trigger,
   } = useForm({
     defaultValues: {
-      userId: "",
+      fullName: "",
       startAt: "",
-      endAt: ""
-    }
+      endAt: "",
+    },
   });
+
+  const fullName = watch("fullName");
+
+  const handleUserChange = (selectedOption: SingleValue<UserOption>) => {
+    setValue("fullName", selectedOption ? selectedOption.label : "");
+    trigger("fullName");
+  };
+
+  useEffect(() => {
+    if (!fullName) {
+      setValue("fullName", "");
+    }
+  }, [fullName, setValue]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-teal-400 font-inter">
@@ -28,20 +58,33 @@ function CreateForm({ rosterId }: CreateFormProps) {
           className="space-y-6"
         >
           <div>
-            <label htmlFor="userId" className="block text-gray-700 font-medium mb-2">
-              User ID
+            <label
+              htmlFor="fullName"
+              className="block text-gray-700 font-medium mb-2"
+            >
+              Full Name
             </label>
-            <input
-              id="userId"
-              {...register("userId", { required: true })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            <Select
+              options={users}
+              onChange={handleUserChange}
+              className="w-full"
+              placeholder="Select a user"
+              isClearable
+              value={users.find((user) => user.label === fullName) || null}
             />
-            {errors.userId && (
-              <p className="text-red-500 text-sm mt-2">User ID is required</p>
+            {errors.fullName && (
+              <p className="text-red-500 text-sm mt-2">Full Name is required</p>
             )}
+            <input
+              type="hidden"
+              {...register("fullName", { required: true })}
+            />
           </div>
           <div>
-            <label htmlFor="startAt" className="block text-gray-700 font-medium mb-2">
+            <label
+              htmlFor="startAt"
+              className="block text-gray-700 font-medium mb-2"
+            >
               Start At
             </label>
             <input
@@ -51,11 +94,16 @@ function CreateForm({ rosterId }: CreateFormProps) {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.startAt && (
-              <p className="text-red-500 text-sm mt-2">Start datetime is required</p>
+              <p className="text-red-500 text-sm mt-2">
+                Start datetime is required
+              </p>
             )}
           </div>
           <div>
-            <label htmlFor="endAt" className="block text-gray-700 font-medium mb-2">
+            <label
+              htmlFor="endAt"
+              className="block text-gray-700 font-medium mb-2"
+            >
               End At
             </label>
             <input
@@ -65,7 +113,9 @@ function CreateForm({ rosterId }: CreateFormProps) {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.endAt && (
-              <p className="text-red-500 text-sm mt-2">End datetime is required</p>
+              <p className="text-red-500 text-sm mt-2">
+                End datetime is required
+              </p>
             )}
           </div>
           <div className="flex justify-between items-center">
@@ -78,6 +128,7 @@ function CreateForm({ rosterId }: CreateFormProps) {
               type="reset"
               value="Reset"
               className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors duration-300"
+              onClick={() => reset()}
             />
           </div>
         </form>

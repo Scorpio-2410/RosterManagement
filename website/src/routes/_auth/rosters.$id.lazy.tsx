@@ -1,15 +1,15 @@
-import CreateForm from '@/components/createForm';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import CreateForm from "@/components/createshiftform";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/_auth/rosters/$id')({
+export const Route = createLazyFileRoute("/_auth/rosters/$id")({
   component: Roster,
 });
 
 export default function Roster() {
-  const {id} = Route.useParams();
+  const { id } = Route.useParams();
   return (
     <div>
-      <CreateForm rosterId={id}/>
+      <CreateForm rosterId={id} />
     </div>
   );
 }
