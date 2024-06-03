@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import Select, { SingleValue } from "react-select";
 import { useEffect } from "react";
 
-type CreateFormProps = {
+type CreateShiftFormProps = {
   rosterId: number;
 };
 
@@ -17,7 +17,7 @@ const users: UserOption[] = [
   { value: "3", label: "Ben Green" },
 ];
 
-function CreateForm({ rosterId }: CreateFormProps) {
+function CreateShiftForm({ rosterId }: CreateShiftFormProps) {
   const {
     register,
     handleSubmit,
@@ -137,4 +137,4 @@ function CreateForm({ rosterId }: CreateFormProps) {
   );
 }
 
-export default CreateForm;
+export default CreateShiftForm;
