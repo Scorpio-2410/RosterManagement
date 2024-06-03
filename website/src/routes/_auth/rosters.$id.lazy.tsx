@@ -5,10 +5,11 @@ export const Route = createLazyFileRoute('/_auth/rosters/$id')({
   component: Roster,
 });
 
-function Roster() {
+export default function Roster() {
+  const {id} = Route.useParams();
   return (
     <div>
-      <CreateForm />
+      <CreateForm rosterId={id}/>
     </div>
   );
 }

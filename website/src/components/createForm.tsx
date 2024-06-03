@@ -1,13 +1,10 @@
 import { useForm } from "react-hook-form";
-import { useParams } from '@tanstack/react-router';
 
-interface Params {
-  id: string;
+interface CreateFormProps {
+  rosterId: string;
 }
 
-function CreateForm() {
-  const
-
+function CreateForm({ rosterId }: CreateFormProps) {
   const {
     register,
     handleSubmit,
