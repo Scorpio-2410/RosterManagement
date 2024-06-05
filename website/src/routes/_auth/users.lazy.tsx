@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { createLazyFileRoute } from '@tanstack/react-router'
+import { AppSettings } from "@/utils/configs";
 
 export const Route = createLazyFileRoute('/_auth/users')({
   component: Users
@@ -13,13 +14,13 @@ type User = {
 function Users() {
   const {data, error, isLoading} = useQuery<User[]>({
     queryKey: ["user"],
-    queryFn: () => fetch("https://jsonplaceholder.typicode.com/users").then((res) =>
+    queryFn: () => fetch(`${AppSettings.baseUrl}/Users/search`).then((res) =>
       res.json()
     ),
   });
 
 const {mutate, isPending, isError} = useMutation({mutationFn: (user: User) => 
-  fetch("https://jsonplaceholder.typicode.com/users", {
+  fetch(`${AppSettings.baseUrl}/Users/search`, {
     method: "POST",
     body: JSON.stringify(user),
     headers: {"Content-type": "application/json; charset=UTF-8"},
