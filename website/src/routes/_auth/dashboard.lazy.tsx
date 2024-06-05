@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 
-export const Route = createFileRoute('/_auth/dashboard')({
+export const Route = createFileRoute("/_auth/dashboard")({
   component: Dashboard,
 });
 
@@ -19,7 +19,7 @@ function Dashboard() {
 function MainContent() {
   const [rosters, setRosters] = useState<string[]>([]);
   const { data, isLoading, refetch } = useQuery<string[], Error>({
-    queryKey: ['fetchRosters'],
+    queryKey: ["fetchRosters"],
     queryFn: fetchRosters,
     enabled: false,
   });
@@ -32,7 +32,7 @@ function MainContent() {
 
   async function fetchRosters() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    return ['Roster 1', 'Roster 2', 'Roster 3']; 
+    return ["Roster 1", "Roster 2", "Roster 3"];
   }
 
   return (

@@ -3,7 +3,7 @@ import Select, { SingleValue } from "react-select";
 import { useEffect } from "react";
 
 type CreateShiftFormProps = {
-  rosterId: number;
+  rosterId: string;
 };
 
 type UserOption = {
