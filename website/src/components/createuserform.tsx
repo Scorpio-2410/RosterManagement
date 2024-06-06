@@ -38,7 +38,9 @@ function CreateUserForm() {
   const role = watch("role");
   const userAvailabilities = watch("availabilities");
 
-  const handleAvailabilitiesChange = (selectedOptions: MultiValue<AvailabilityOption>) => {
+  const handleAvailabilitiesChange = (
+    selectedOptions: MultiValue<AvailabilityOption>
+  ) => {
     setValue(
       "availabilities",
       selectedOptions ? selectedOptions.map((option) => option.value) : []
@@ -78,7 +80,9 @@ function CreateUserForm() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.firstName && (
-              <p className="text-red-500 text-sm mt-2">First Name is required</p>
+              <p className="text-red-500 text-sm mt-2">
+                First Name is required
+              </p>
             )}
           </div>
           <div>
@@ -132,12 +136,11 @@ function CreateUserForm() {
               )}
             />
             {errors.availabilities && (
-              <p className="text-red-500 text-sm mt-2">Availabilities are required</p>
+              <p className="text-red-500 text-sm mt-2">
+                Availabilities are required
+              </p>
             )}
-            <input
-              type="hidden"
-              {...register("availabilities")}
-            />
+            <input type="hidden" {...register("availabilities")} />
           </div>
           <div className="flex justify-between items-center">
             <input

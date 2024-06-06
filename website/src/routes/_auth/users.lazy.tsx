@@ -1,6 +1,8 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { AppSettings } from "@/utils/configs";
+import { useState } from "react";
+import CreateUserForm from "@/components/createuserform";
 
 export const Route = createLazyFileRoute("/_auth/users")({
   component: Users,
@@ -15,6 +17,10 @@ type User = {
 };
 
 function Users() {
+  const [searchParams] = useState({
+    pageNumber: 1,
+    pageSize: 100,
+  });
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -23,13 +29,11 @@ function Users() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          pageNumber: 1,
-          pageSize: 100,
-        }),
+        body: JSON.stringify({ searchParams }),
       });
       return await res.json();
     },
+    enabled: false,
   });
 
   const { mutate, isPending, isError } = useMutation({
@@ -47,7 +51,9 @@ function Users() {
   if (error || isError) return <div>There was an error!</div>;
 
   if (isLoading) return <div>Data is Loading.....</div>;
+
   console.log(data);
+
   const handleSubmit = () => {
     mutate({
       firstName: "Nabidul",
@@ -56,11 +62,17 @@ function Users() {
     });
   };
 
+  const handleSearch = () => {
+    refetch();
+  };
+
   return (
-    <div className="Dashboard">
+    <div className="User">
+      <CreateUserForm />
       {/* Ispending is true and this will be shown */}
       {isPending && <p>Data is being added...</p>}
       <button onClick={handleSubmit}>Add Post</button>
+      <button onClick={handleSearch}>Search</button>
       {data &&
         data.result.map((user: User) => (
           <div>
