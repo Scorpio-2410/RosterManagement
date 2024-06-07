@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import Select, { MultiValue } from "react-select";
-import { useEffect } from "react";
 
 type AvailabilityOption = {
   value: string;
@@ -17,16 +16,8 @@ const availabilities: AvailabilityOption[] = [
   { value: "sunday", label: "Sunday" },
 ];
 
-function CreateUserForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-    reset,
-    trigger,
-  } = useForm({
+export default function CreateUserForm() {
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -35,35 +26,25 @@ function CreateUserForm() {
     },
   });
 
-  const role = watch("role");
-  const userAvailabilities = watch("availabilities");
-
   const handleAvailabilitiesChange = (
     selectedOptions: MultiValue<AvailabilityOption>
   ) => {
-    setValue(
-      "availabilities",
-      selectedOptions ? selectedOptions.map((option) => option.value) : []
-    );
-    trigger("availabilities");
+    register("availabilities").onChange({
+      target: {
+        name: "availabilities",
+        value: selectedOptions ? selectedOptions.map((option) => option.value) : []
+      }
+    });
   };
-
-  useEffect(() => {
-    if (!role) {
-      setValue("role", "");
-    }
-    if (!userAvailabilities) {
-      setValue("availabilities", []);
-    }
-  }, [role, userAvailabilities, setValue]);
-
+  
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-teal-400 font-inter">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold mb-4 text-center">Create User</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Create New User</h1>
         <form
           onSubmit={handleSubmit((data) => {
             alert(JSON.stringify(data));
+            console.log(data);
           })}
           className="space-y-6"
         >
@@ -76,7 +57,7 @@ function CreateUserForm() {
             </label>
             <input
               id="firstName"
-              {...register("firstName", { required: true })}
+              {...register("firstName", { required: "First name required" })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.firstName && (
@@ -94,7 +75,7 @@ function CreateUserForm() {
             </label>
             <input
               id="lastName"
-              {...register("lastName", { required: true })}
+              {...register("lastName", { required: "Last name required" })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.lastName && (
@@ -110,7 +91,7 @@ function CreateUserForm() {
             </label>
             <input
               id="role"
-              {...register("role", { required: true })}
+              {...register("role", { required: "Role required" })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.role && (
@@ -131,9 +112,6 @@ function CreateUserForm() {
               placeholder="Select availabilities"
               isClearable
               isMulti
-              value={availabilities.filter((availability) =>
-                userAvailabilities.includes(availability.value)
-              )}
             />
             {errors.availabilities && (
               <p className="text-red-500 text-sm mt-2">
@@ -160,5 +138,3 @@ function CreateUserForm() {
     </div>
   );
 }
-
-export default CreateUserForm;
