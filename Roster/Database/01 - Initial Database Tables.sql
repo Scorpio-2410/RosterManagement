@@ -17,7 +17,6 @@ CREATE TABLE Users (
     [role] NVARCHAR(16) NOT NULL, -- Admin, User, Manager
 
     [availability] NVARCHAR(32), -- Mon,Tue,Wed,Thu,Fri,Sat,Sun
-
 )
 
 CREATE TABLE Rosters (
