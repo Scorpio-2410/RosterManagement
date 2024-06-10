@@ -1,12 +1,15 @@
+import { AppSettings } from "@/utils/configs";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import Select, { MultiValue } from "react-select";
+import { useState } from "react";
 
 type AvailabilityOption = {
   value: string;
   label: string;
 };
 
-const availabilities: AvailabilityOption[] = [
+const availabilityOptions: AvailabilityOption[] = [
   { value: "monday", label: "Monday" },
   { value: "tuesday", label: "Tuesday" },
   { value: "wednesday", label: "Wednesday" },
@@ -16,36 +19,65 @@ const availabilities: AvailabilityOption[] = [
   { value: "sunday", label: "Sunday" },
 ];
 
+type User = {
+  firstName: string;
+  lastName: string;
+  role: string;
+  availability?: string;
+};
+
 export default function CreateUserForm() {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      role: "",
-      availabilities: [] as string[],
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<User>();
+
+  const [selectedAvailability, setSelectedAvailability] = useState<
+    AvailabilityOption[]
+  >([]);
+
+  const { mutate } = useMutation({
+    mutationFn: async (user: User) => {
+      const res = await fetch(`${AppSettings.baseUrl}/users`, {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: { "Content-type": "application/json" },
+      });
+      return await res.json();
+    },
+    onSuccess: () => {
+      reset();
+      setSelectedAvailability([]);
+      alert("User created successfully!");
     },
   });
 
-  const handleAvailabilitiesChange = (
+  const handleAvailabilityChange = (
     selectedOptions: MultiValue<AvailabilityOption>
   ) => {
-    register("availabilities").onChange({
-      target: {
-        name: "availabilities",
-        value: selectedOptions ? selectedOptions.map((option) => option.value) : []
-      }
-    });
+    const values = selectedOptions
+      ? selectedOptions.map((option) => option.value)
+      : [];
+    setSelectedAvailability(selectedOptions as AvailabilityOption[]);
+    setValue("availability", values.join(", "));
   };
-  
+
+  const handleSubmitHandler = (data: User) => {
+    if (!data.availability || data.availability.trim() === "") {
+      delete data.availability;
+    }
+    mutate(data);
+  };
+
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-teal-400 font-inter">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold mb-4 text-center">Create New User</h1>
         <form
-          onSubmit={handleSubmit((data) => {
-            alert(JSON.stringify(data));
-            console.log(data);
-          })}
+          onSubmit={handleSubmit(handleSubmitHandler)}
           className="space-y-6"
         >
           <div>
@@ -62,7 +94,7 @@ export default function CreateUserForm() {
             />
             {errors.firstName && (
               <p className="text-red-500 text-sm mt-2">
-                First Name is required
+                {errors.firstName.message}
               </p>
             )}
           </div>
@@ -79,7 +111,9 @@ export default function CreateUserForm() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.lastName && (
-              <p className="text-red-500 text-sm mt-2">Last Name is required</p>
+              <p className="text-red-500 text-sm mt-2">
+                {errors.lastName.message}
+              </p>
             )}
           </div>
           <div>
@@ -95,30 +129,26 @@ export default function CreateUserForm() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.role && (
-              <p className="text-red-500 text-sm mt-2">Role is required</p>
+              <p className="text-red-500 text-sm mt-2">{errors.role.message}</p>
             )}
           </div>
           <div>
             <label
-              htmlFor="availabilities"
+              htmlFor="availability"
               className="block text-gray-700 font-medium mb-2"
             >
-              Availabilities
+              Availability
             </label>
             <Select
-              options={availabilities}
-              onChange={handleAvailabilitiesChange}
+              options={availabilityOptions}
+              onChange={handleAvailabilityChange}
               className="w-full"
-              placeholder="Select availabilities"
+              placeholder="Select availability"
               isClearable
               isMulti
+              value={selectedAvailability}
             />
-            {errors.availabilities && (
-              <p className="text-red-500 text-sm mt-2">
-                Availabilities are required
-              </p>
-            )}
-            <input type="hidden" {...register("availabilities")} />
+            <input type="hidden" {...register("availability")} />
           </div>
           <div className="flex justify-between items-center">
             <input
@@ -130,7 +160,10 @@ export default function CreateUserForm() {
               type="reset"
               value="Reset"
               className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors duration-300"
-              onClick={() => reset()}
+              onClick={() => {
+                reset();
+                setSelectedAvailability([]);
+              }}
             />
           </div>
         </form>
