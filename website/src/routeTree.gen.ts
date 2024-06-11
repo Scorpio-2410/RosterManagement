@@ -26,13 +26,13 @@ const AuthDashboardLazyImport = createFileRoute('/_auth/dashboard')()
 const AuthUsersSearchusersLazyImport = createFileRoute(
   '/_auth/users/searchusers',
 )()
-const AuthUsersModifyusersLazyImport = createFileRoute(
-  '/_auth/users/modifyusers',
-)()
 const AuthUsersCreateusersLazyImport = createFileRoute(
   '/_auth/users/createusers',
 )()
 const AuthRostersIdLazyImport = createFileRoute('/_auth/rosters/$id')()
+const AuthUsersModifyusersIdLazyImport = createFileRoute(
+  '/_auth/users/modifyusers/$id',
+)()
 
 // Create/Update Routes
 
@@ -84,13 +84,6 @@ const AuthUsersSearchusersLazyRoute = AuthUsersSearchusersLazyImport.update({
   import('./routes/_auth/users/searchusers.lazy').then((d) => d.Route),
 )
 
-const AuthUsersModifyusersLazyRoute = AuthUsersModifyusersLazyImport.update({
-  path: '/users/modifyusers',
-  getParentRoute: () => AuthRoute,
-} as any).lazy(() =>
-  import('./routes/_auth/users/modifyusers.lazy').then((d) => d.Route),
-)
-
 const AuthUsersCreateusersLazyRoute = AuthUsersCreateusersLazyImport.update({
   path: '/users/createusers',
   getParentRoute: () => AuthRoute,
@@ -103,6 +96,15 @@ const AuthRostersIdLazyRoute = AuthRostersIdLazyImport.update({
   getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
   import('./routes/_auth/rosters.$id.lazy').then((d) => d.Route),
+)
+
+const AuthUsersModifyusersIdLazyRoute = AuthUsersModifyusersIdLazyImport.update(
+  {
+    path: '/users/modifyusers/$id',
+    getParentRoute: () => AuthRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/_auth/users/modifyusers.$id.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
@@ -141,16 +143,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthUsersCreateusersLazyImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/users/modifyusers': {
-      preLoaderRoute: typeof AuthUsersModifyusersLazyImport
-      parentRoute: typeof AuthImport
-    }
     '/_auth/users/searchusers': {
       preLoaderRoute: typeof AuthUsersSearchusersLazyImport
       parentRoute: typeof AuthImport
     }
     '/_auth/rosters/': {
       preLoaderRoute: typeof AuthRostersIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/users/modifyusers/$id': {
+      preLoaderRoute: typeof AuthUsersModifyusersIdLazyImport
       parentRoute: typeof AuthImport
     }
   }
@@ -166,9 +168,9 @@ export const routeTree = rootRoute.addChildren([
     AuthProfileLazyRoute,
     AuthRostersIdLazyRoute,
     AuthUsersCreateusersLazyRoute,
-    AuthUsersModifyusersLazyRoute,
     AuthUsersSearchusersLazyRoute,
     AuthRostersIndexRoute,
+    AuthUsersModifyusersIdLazyRoute,
   ]),
   LoginLazyRoute,
 ])

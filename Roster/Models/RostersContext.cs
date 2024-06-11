@@ -137,7 +137,7 @@ public partial class RostersContext : DbContext
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Availability)
-                .HasMaxLength(32)
+                .HasMaxLength(64)
                 .HasColumnName("availability");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(256)

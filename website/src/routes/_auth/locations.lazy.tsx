@@ -1,12 +1,9 @@
-import CreateLocationForm from '@/components/createlocationform'
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/_auth/locations')({
-  component: Location
-})
+export const Route = createLazyFileRoute("/_auth/locations")({
+  component: Location,
+});
 
-function Location(){
-  return(
-    <CreateLocationForm/>
-  )
+function Location() {
+  return <div>Hello</div>;
 }

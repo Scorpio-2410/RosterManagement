@@ -32,7 +32,7 @@ namespace Rosters.Features.Locations.Operations
 
     public class CreateLocationHandler : IRequestHandler<CreateLocation, CreateLocationResponse> //Takes request to create new location and returns reponse
     {
-        private RostersContext _context;
+        readonly RostersContext _context;
 
         public CreateLocationHandler(RostersContext context) //RosterDbContext to interact with database
         {

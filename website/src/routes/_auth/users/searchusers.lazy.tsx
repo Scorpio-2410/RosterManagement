@@ -1,3 +1,4 @@
+import SearchUserForm from "@/components/searchuserform";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_auth/users/searchusers")({
@@ -5,5 +6,5 @@ export const Route = createLazyFileRoute("/_auth/users/searchusers")({
 });
 
 function SearchUser() {
-  return <div>hello</div>;
+  return <SearchUserForm />;
 }
