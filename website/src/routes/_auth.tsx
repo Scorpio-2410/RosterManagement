@@ -1,12 +1,21 @@
-import { createFileRoute, redirect} from '@tanstack/react-router'
-import { isAuthenticated } from '../utils/auth'
+import { useEffect } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useAuth0 } from "@auth0/auth0-react";
 
-export const Route = createFileRoute('/_auth')({
-  beforeLoad:() => {
-    if(!isAuthenticated()){
-      throw redirect({
-        to: '/login'
-      })
+const AuthHandler = () => {
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
     }
-  }
-})
+  }, [isAuthenticated, loginWithRedirect]);
+
+  return null;
+};
+
+export const Route = createFileRoute("/_auth")({
+  beforeLoad: () => {
+    return <AuthHandler />;
+  },
+});

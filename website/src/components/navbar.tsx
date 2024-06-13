@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef, MouseEvent } from "react";
-import { isAuthenticated, signOut } from "../utils/auth";
+import { useAuth } from "../utils/auth";
 import Dropdown from "@/components/dropdown";
 
 const Navbar = () => {
-  const isLoggedIn = isAuthenticated();
+  const { isAuthenticated, user, signIn, signOut } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [username, setUsername] = useState("");
@@ -12,13 +12,12 @@ const Navbar = () => {
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      const storedUsername = localStorage.getItem("username");
-      if (storedUsername) {
-        setUsername(storedUsername);
+    if (isAuthenticated) {
+      if (user && user.name) {
+        setUsername(user.name);
       }
     }
-  }, [isLoggedIn]);
+  }, [isAuthenticated, user]);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -38,7 +37,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     signOut();
-    localStorage.removeItem("username");
     window.location.href = "/login";
   };
 
@@ -74,7 +72,7 @@ const Navbar = () => {
     <div className="bg-gradient-to-r from-blue-500 to-teal-400 p-4">
       <div className="flex justify-between items-center">
         <div className="flex gap-4">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Link
                 to="/dashboard"
@@ -133,7 +131,7 @@ const Navbar = () => {
           )}
         </div>
         <div className="relative" ref={profileDropdownRef}>
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <Dropdown
               toggleDropdown={toggleDropdown}
               dropdownOpen={dropdownOpen}
@@ -143,7 +141,7 @@ const Navbar = () => {
             />
           ) : (
             <Link
-              to="/login"
+              onClick={() => signIn()}
               className="[&.active]:font-bold text-white hover:text-gray-300"
             >
               Login
