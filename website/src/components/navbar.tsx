@@ -105,25 +105,18 @@ const Navbar = () => {
                   <div className="absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div className="py-1">
                       <Link
-                        to="/users/createusers"
+                        to="/users/create"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={closeUserDropdown}
                       >
                         Create Users
                       </Link>
                       <Link
-                        to="/users/searchusers"
+                        to="/users/search-edit"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={closeUserDropdown}
                       >
                         Search Users
-                      </Link>
-                      <Link
-                        to="/users/modifyusers"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={closeUserDropdown}
-                      >
-                        Modify Users
                       </Link>
                     </div>
                   </div>

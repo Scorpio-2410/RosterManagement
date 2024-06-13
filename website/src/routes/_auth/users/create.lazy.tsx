@@ -3,6 +3,11 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import Select, { MultiValue } from "react-select";
 import { useState } from "react";
+import { createLazyFileRoute } from "@tanstack/react-router";
+
+export const Route = createLazyFileRoute("/_auth/users/create")({
+  component: CreateUser,
+});
 
 type AvailabilityOption = {
   value: string;
@@ -26,7 +31,7 @@ type User = {
   availability?: string;
 };
 
-export default function CreateUserForm() {
+function CreateUser() {
   const {
     register,
     handleSubmit,
@@ -171,3 +176,4 @@ export default function CreateUserForm() {
     </div>
   );
 }
+

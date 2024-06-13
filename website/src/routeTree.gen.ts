@@ -14,24 +14,22 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as AuthRostersIndexImport } from './routes/_auth/rosters.index'
+import { Route as AuthRostersIndexImport } from './routes/_auth/rosters/index'
 
 // Create Virtual Routes
 
 const LoginLazyImport = createFileRoute('/login')()
 const IndexLazyImport = createFileRoute('/')()
 const AuthProfileLazyImport = createFileRoute('/_auth/profile')()
-const AuthLocationsLazyImport = createFileRoute('/_auth/locations')()
 const AuthDashboardLazyImport = createFileRoute('/_auth/dashboard')()
-const AuthUsersSearchusersLazyImport = createFileRoute(
-  '/_auth/users/searchusers',
-)()
-const AuthUsersCreateusersLazyImport = createFileRoute(
-  '/_auth/users/createusers',
-)()
+const AuthLocationsIndexLazyImport = createFileRoute('/_auth/locations/')()
+const AuthUsersCreateLazyImport = createFileRoute('/_auth/users/create')()
 const AuthRostersIdLazyImport = createFileRoute('/_auth/rosters/$id')()
-const AuthUsersModifyusersIdLazyImport = createFileRoute(
-  '/_auth/users/modifyusers/$id',
+const AuthUsersSearchEditIndexLazyImport = createFileRoute(
+  '/_auth/users/search-edit/',
+)()
+const AuthUsersSearchEditUseridLazyImport = createFileRoute(
+  '/_auth/users/search-edit/$userid',
 )()
 
 // Create/Update Routes
@@ -56,13 +54,6 @@ const AuthProfileLazyRoute = AuthProfileLazyImport.update({
   getParentRoute: () => AuthRoute,
 } as any).lazy(() => import('./routes/_auth/profile.lazy').then((d) => d.Route))
 
-const AuthLocationsLazyRoute = AuthLocationsLazyImport.update({
-  path: '/locations',
-  getParentRoute: () => AuthRoute,
-} as any).lazy(() =>
-  import('./routes/_auth/locations.lazy').then((d) => d.Route),
-)
-
 const AuthDashboardLazyRoute = AuthDashboardLazyImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
@@ -70,42 +61,51 @@ const AuthDashboardLazyRoute = AuthDashboardLazyImport.update({
   import('./routes/_auth/dashboard.lazy').then((d) => d.Route),
 )
 
+const AuthLocationsIndexLazyRoute = AuthLocationsIndexLazyImport.update({
+  path: '/locations/',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/locations/index.lazy').then((d) => d.Route),
+)
+
 const AuthRostersIndexRoute = AuthRostersIndexImport.update({
   path: '/rosters/',
   getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
-  import('./routes/_auth/rosters.index.lazy').then((d) => d.Route),
+  import('./routes/_auth/rosters/index.lazy').then((d) => d.Route),
 )
 
-const AuthUsersSearchusersLazyRoute = AuthUsersSearchusersLazyImport.update({
-  path: '/users/searchusers',
+const AuthUsersCreateLazyRoute = AuthUsersCreateLazyImport.update({
+  path: '/users/create',
   getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
-  import('./routes/_auth/users/searchusers.lazy').then((d) => d.Route),
-)
-
-const AuthUsersCreateusersLazyRoute = AuthUsersCreateusersLazyImport.update({
-  path: '/users/createusers',
-  getParentRoute: () => AuthRoute,
-} as any).lazy(() =>
-  import('./routes/_auth/users/createusers.lazy').then((d) => d.Route),
+  import('./routes/_auth/users/create.lazy').then((d) => d.Route),
 )
 
 const AuthRostersIdLazyRoute = AuthRostersIdLazyImport.update({
   path: '/rosters/$id',
   getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
-  import('./routes/_auth/rosters.$id.lazy').then((d) => d.Route),
+  import('./routes/_auth/rosters/$id.lazy').then((d) => d.Route),
 )
 
-const AuthUsersModifyusersIdLazyRoute = AuthUsersModifyusersIdLazyImport.update(
-  {
-    path: '/users/modifyusers/$id',
+const AuthUsersSearchEditIndexLazyRoute =
+  AuthUsersSearchEditIndexLazyImport.update({
+    path: '/users/search-edit/',
     getParentRoute: () => AuthRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/_auth/users/modifyusers.$id.lazy').then((d) => d.Route),
-)
+  } as any).lazy(() =>
+    import('./routes/_auth/users/search-edit.index.lazy').then((d) => d.Route),
+  )
+
+const AuthUsersSearchEditUseridLazyRoute =
+  AuthUsersSearchEditUseridLazyImport.update({
+    path: '/users/search-edit/$userid',
+    getParentRoute: () => AuthRoute,
+  } as any).lazy(() =>
+    import('./routes/_auth/users/search-edit.$userid.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -127,10 +127,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardLazyImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/locations': {
-      preLoaderRoute: typeof AuthLocationsLazyImport
-      parentRoute: typeof AuthImport
-    }
     '/_auth/profile': {
       preLoaderRoute: typeof AuthProfileLazyImport
       parentRoute: typeof AuthImport
@@ -139,20 +135,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRostersIdLazyImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/users/createusers': {
-      preLoaderRoute: typeof AuthUsersCreateusersLazyImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/users/searchusers': {
-      preLoaderRoute: typeof AuthUsersSearchusersLazyImport
+    '/_auth/users/create': {
+      preLoaderRoute: typeof AuthUsersCreateLazyImport
       parentRoute: typeof AuthImport
     }
     '/_auth/rosters/': {
       preLoaderRoute: typeof AuthRostersIndexImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/users/modifyusers/$id': {
-      preLoaderRoute: typeof AuthUsersModifyusersIdLazyImport
+    '/_auth/locations/': {
+      preLoaderRoute: typeof AuthLocationsIndexLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/users/search-edit/$userid': {
+      preLoaderRoute: typeof AuthUsersSearchEditUseridLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/users/search-edit/': {
+      preLoaderRoute: typeof AuthUsersSearchEditIndexLazyImport
       parentRoute: typeof AuthImport
     }
   }
@@ -164,13 +164,13 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AuthRoute.addChildren([
     AuthDashboardLazyRoute,
-    AuthLocationsLazyRoute,
     AuthProfileLazyRoute,
     AuthRostersIdLazyRoute,
-    AuthUsersCreateusersLazyRoute,
-    AuthUsersSearchusersLazyRoute,
+    AuthUsersCreateLazyRoute,
     AuthRostersIndexRoute,
-    AuthUsersModifyusersIdLazyRoute,
+    AuthLocationsIndexLazyRoute,
+    AuthUsersSearchEditUseridLazyRoute,
+    AuthUsersSearchEditIndexLazyRoute,
   ]),
   LoginLazyRoute,
 ])
