@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { AppSettings } from "@/utils/configs";
+import { createLazyFileRoute } from "@tanstack/react-router";
+
+export const Route = createLazyFileRoute("/_auth/users/search-edit/")({
+  component: SearchUser,
+});
 
 type User = {
   userId: number;
@@ -18,7 +23,7 @@ type SearchResponse<T> = {
   result: T[];
 };
 
-export default function SearchUserForm() {
+function SearchUser() {
   const [searchParams, setSearchParams] = useState({
     lastName: "",
   });
@@ -137,7 +142,7 @@ export default function SearchUserForm() {
                       <tr key={user.userId}>
                         <td className="border px-4 py-2">
                           <Link
-                            to={`/_auth/users/modifyusers/${user.userId}`}
+                            to={`/_auth/users/search-edit/${user.userId}`}
                             className="text-blue-500 underline"
                           >
                             {user.userId}
