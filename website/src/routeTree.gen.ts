@@ -18,7 +18,6 @@ import { Route as AuthRostersIndexImport } from './routes/_auth/rosters/index'
 
 // Create Virtual Routes
 
-const LoginLazyImport = createFileRoute('/login')()
 const IndexLazyImport = createFileRoute('/')()
 const AuthProfileLazyImport = createFileRoute('/_auth/profile')()
 const AuthDashboardLazyImport = createFileRoute('/_auth/dashboard')()
@@ -36,11 +35,6 @@ const AuthUsersSearchEditUseridLazyImport = createFileRoute(
 )()
 
 // Create/Update Routes
-
-const LoginLazyRoute = LoginLazyImport.update({
-  path: '/login',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
 const AuthRoute = AuthImport.update({
   id: '/_auth',
@@ -129,10 +123,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/login': {
-      preLoaderRoute: typeof LoginLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth/dashboard': {
       preLoaderRoute: typeof AuthDashboardLazyImport
       parentRoute: typeof AuthImport
@@ -187,7 +177,6 @@ export const routeTree = rootRoute.addChildren([
     AuthUsersSearchEditUseridLazyRoute,
     AuthUsersSearchEditIndexLazyRoute,
   ]),
-  LoginLazyRoute,
 ])
 
 /* prettier-ignore-end */

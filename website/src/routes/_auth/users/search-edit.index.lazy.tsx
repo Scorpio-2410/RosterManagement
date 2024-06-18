@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { AppSettings } from "@/utils/configs";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
@@ -23,7 +23,7 @@ type SearchResponse<T> = {
   result: T[];
 };
 
-function SearchUser() {
+export default function SearchUser() {
   const [searchParams, setSearchParams] = useState({
     lastName: "",
   });
@@ -34,6 +34,9 @@ function SearchUser() {
     searchParams,
     currentPage,
   ]);
+
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setQueryKey(["users", searchParams, currentPage]);
@@ -63,6 +66,17 @@ function SearchUser() {
     enabled: false,
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      await fetch(`${AppSettings.baseUrl}/users/${userId}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSearchParams((prevParams) => ({
@@ -79,6 +93,14 @@ function SearchUser() {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     refetch({ throwOnError: false, cancelRefetch: false });
+  };
+
+  const handleDelete = (userId: number) => {
+    deleteMutation.mutate(userId);
+  };
+
+  const handleModify = (userId: number) => {
+    navigate({ to: `/_auth/users/search-edit/${userId}` });
   };
 
   const totalPages = data ? Math.ceil(data.totalRecords / 5) : 1;
@@ -135,24 +157,32 @@ function SearchUser() {
                       <th className="px-4 py-2">Last Name</th>
                       <th className="px-4 py-2">Role</th>
                       <th className="px-4 py-2">Availability</th>
+                      <th className="px-4 py-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.result.map((user: User) => (
                       <tr key={user.userId}>
-                        <td className="border px-4 py-2">
-                          <Link
-                            to={`/_auth/users/search-edit/${user.userId}`}
-                            className="text-blue-500 underline"
-                          >
-                            {user.userId}
-                          </Link>
-                        </td>
+                        <td className="border px-4 py-2">{user.userId}</td>
                         <td className="border px-4 py-2">{user.firstName}</td>
                         <td className="border px-4 py-2">{user.lastName}</td>
                         <td className="border px-4 py-2">{user.role}</td>
                         <td className="border px-4 py-2">
                           {user.availability || "N/A"}
+                        </td>
+                        <td className="border px-4 py-2 flex space-x-2">
+                          <button
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                            onClick={() => handleModify(user.userId)}
+                          >
+                            Modify
+                          </button>
+                          <button
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                            onClick={() => handleDelete(user.userId)}
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
