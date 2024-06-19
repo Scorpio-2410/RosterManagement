@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { AppSettings } from "@/utils/configs";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
@@ -35,9 +34,6 @@ export default function SearchUser() {
     currentPage,
   ]);
 
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
   useEffect(() => {
     setQueryKey(["users", searchParams, currentPage]);
   }, [searchParams, currentPage]);
@@ -66,14 +62,21 @@ export default function SearchUser() {
     enabled: false,
   });
 
-  const deleteMutation = useMutation({
+  const deleteUser = useMutation({
     mutationFn: async (userId: number) => {
-      await fetch(`${AppSettings.baseUrl}/users/${userId}`, {
+      const res = await fetch(`${AppSettings.baseUrl}/users/delete${userId}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete user");
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      refetch();
     },
   });
 
@@ -96,11 +99,7 @@ export default function SearchUser() {
   };
 
   const handleDelete = (userId: number) => {
-    deleteMutation.mutate(userId);
-  };
-
-  const handleModify = (userId: number) => {
-    navigate({ to: `/_auth/users/search-edit/${userId}` });
+    deleteUser.mutate(userId);
   };
 
   const totalPages = data ? Math.ceil(data.totalRecords / 5) : 1;
@@ -171,10 +170,7 @@ export default function SearchUser() {
                           {user.availability || "N/A"}
                         </td>
                         <td className="border px-4 py-2 flex space-x-2">
-                          <button
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                            onClick={() => handleModify(user.userId)}
-                          >
+                          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                             Modify
                           </button>
                           <button
