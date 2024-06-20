@@ -30,9 +30,6 @@ const AuthRostersIdLazyImport = createFileRoute('/_auth/rosters/$id')()
 const AuthUsersSearchEditIndexLazyImport = createFileRoute(
   '/_auth/users/search-edit/',
 )()
-const AuthUsersSearchEditUseridLazyImport = createFileRoute(
-  '/_auth/users/search-edit/$userid',
-)()
 
 // Create/Update Routes
 
@@ -101,16 +98,6 @@ const AuthUsersSearchEditIndexLazyRoute =
     import('./routes/_auth/users/search-edit.index.lazy').then((d) => d.Route),
   )
 
-const AuthUsersSearchEditUseridLazyRoute =
-  AuthUsersSearchEditUseridLazyImport.update({
-    path: '/users/search-edit/$userid',
-    getParentRoute: () => AuthRoute,
-  } as any).lazy(() =>
-    import('./routes/_auth/users/search-edit.$userid.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -151,10 +138,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLocationsIndexLazyImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/users/search-edit/$userid': {
-      preLoaderRoute: typeof AuthUsersSearchEditUseridLazyImport
-      parentRoute: typeof AuthImport
-    }
     '/_auth/users/search-edit/': {
       preLoaderRoute: typeof AuthUsersSearchEditIndexLazyImport
       parentRoute: typeof AuthImport
@@ -174,7 +157,6 @@ export const routeTree = rootRoute.addChildren([
     AuthUsersModifyusersLazyRoute,
     AuthRostersIndexRoute,
     AuthLocationsIndexLazyRoute,
-    AuthUsersSearchEditUseridLazyRoute,
     AuthUsersSearchEditIndexLazyRoute,
   ]),
 ])

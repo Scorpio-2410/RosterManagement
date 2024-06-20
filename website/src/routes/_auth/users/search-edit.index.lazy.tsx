@@ -33,6 +33,8 @@ export default function SearchUser() {
     searchParams,
     currentPage,
   ]);
+  const [editableUserId, setEditableUserId] = useState<number | null>(null);
+  const [editableUser, setEditableUser] = useState<Partial<User> | null>(null);
 
   useEffect(() => {
     setQueryKey(["users", searchParams, currentPage]);
@@ -80,6 +82,60 @@ export default function SearchUser() {
     },
   });
 
+  const updateUser = useMutation({
+    mutationFn: async (user: Partial<User>) => {
+      const patchDoc = [];
+      if (editableUser?.firstName) {
+        patchDoc.push({
+          op: "replace",
+          path: "/FirstName",
+          value: editableUser.firstName,
+        });
+      }
+      if (editableUser?.lastName) {
+        patchDoc.push({
+          op: "replace",
+          path: "/LastName",
+          value: editableUser.lastName,
+        });
+      }
+      if (editableUser?.role) {
+        patchDoc.push({
+          op: "replace",
+          path: "/Role",
+          value: editableUser.role,
+        });
+      }
+      if (editableUser?.availability !== undefined) {
+        patchDoc.push({
+          op: "replace",
+          path: "/Availability",
+          value: editableUser.availability,
+        });
+      }
+
+      const res = await fetch(
+        `${AppSettings.baseUrl}/users/modify${user.userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json-patch+json",
+          },
+          body: JSON.stringify(patchDoc),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to update user");
+      }
+    },
+    onSuccess: () => {
+      setEditableUserId(null);
+      setEditableUser(null);
+      refetch();
+    },
+  });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSearchParams((prevParams) => ({
@@ -100,6 +156,25 @@ export default function SearchUser() {
 
   const handleDelete = (userId: number) => {
     deleteUser.mutate(userId);
+  };
+
+  const handleEdit = (user: User) => {
+    setEditableUserId(user.userId);
+    setEditableUser({ ...user });
+  };
+
+  const handleUpdate = () => {
+    if (editableUser) {
+      updateUser.mutate(editableUser);
+    }
+  };
+
+  const handleEditableUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditableUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
   };
 
   const totalPages = data ? Math.ceil(data.totalRecords / 5) : 1;
@@ -163,16 +238,74 @@ export default function SearchUser() {
                     {data.result.map((user: User) => (
                       <tr key={user.userId}>
                         <td className="border px-4 py-2">{user.userId}</td>
-                        <td className="border px-4 py-2">{user.firstName}</td>
-                        <td className="border px-4 py-2">{user.lastName}</td>
-                        <td className="border px-4 py-2">{user.role}</td>
                         <td className="border px-4 py-2">
-                          {user.availability || "N/A"}
+                          {editableUserId === user.userId ? (
+                            <input
+                              type="text"
+                              name="firstName"
+                              value={editableUser?.firstName || ""}
+                              onChange={handleEditableUserChange}
+                              className="w-full"
+                            />
+                          ) : (
+                            user.firstName
+                          )}
+                        </td>
+                        <td className="border px-4 py-2">
+                          {editableUserId === user.userId ? (
+                            <input
+                              type="text"
+                              name="lastName"
+                              value={editableUser?.lastName || ""}
+                              onChange={handleEditableUserChange}
+                              className="w-full"
+                            />
+                          ) : (
+                            user.lastName
+                          )}
+                        </td>
+                        <td className="border px-4 py-2">
+                          {editableUserId === user.userId ? (
+                            <input
+                              type="text"
+                              name="role"
+                              value={editableUser?.role || ""}
+                              onChange={handleEditableUserChange}
+                              className="w-full"
+                            />
+                          ) : (
+                            user.role
+                          )}
+                        </td>
+                        <td className="border px-4 py-2">
+                          {editableUserId === user.userId ? (
+                            <input
+                              type="text"
+                              name="availability"
+                              value={editableUser?.availability || ""}
+                              onChange={handleEditableUserChange}
+                              className="w-full"
+                            />
+                          ) : (
+                            user.availability || "N/A"
+                          )}
                         </td>
                         <td className="border px-4 py-2 flex space-x-2">
-                          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
-                            Modify
-                          </button>
+                          {editableUserId === user.userId ? (
+                            <button
+                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                              onClick={handleUpdate}
+                            >
+                              Update
+                            </button>
+                          ) : (
+                            <button
+                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                              onClick={() => handleEdit(user)}
+                            >
+                              Modify
+                            </button>
+                          )}
                           <button
                             className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
                             onClick={() => handleDelete(user.userId)}

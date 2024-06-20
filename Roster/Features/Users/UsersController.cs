@@ -26,7 +26,7 @@ namespace Roster1.Features.Users
         public async Task<IActionResult> SearchUser([FromBody] SearchUsers request) =>
             Ok(await _mediator.Send(request));
 
-        [HttpPatch("{UserId}")]
+        [HttpPatch("modify{UserId}")]
         public async Task<IActionResult> PatchUser(PartialUpdateUser request)
         {
             var response = await _mediator.Send(request);
