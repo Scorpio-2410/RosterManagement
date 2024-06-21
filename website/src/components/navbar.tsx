@@ -110,7 +110,7 @@ const Navbar = () => {
                         Create Users
                       </Link>
                       <Link
-                        to="/users/search-edit"
+                        to="/users/search-modify-delete"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={closeUserDropdown}
                       >

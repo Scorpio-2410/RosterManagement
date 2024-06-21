@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AppSettings } from "@/utils/configs";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { useForm, Controller } from "react-hook-form";
+import Select, { MultiValue } from "react-select";
 
-export const Route = createLazyFileRoute("/_auth/users/search-edit/")({
+export const Route = createLazyFileRoute("/_auth/users/search-modify-delete/")({
   component: SearchUser,
 });
 
@@ -12,7 +14,7 @@ type User = {
   firstName: string;
   lastName: string;
   role: string;
-  availability: string | null;
+  availability: string;
 };
 
 type SearchResponse<T> = {
@@ -21,6 +23,21 @@ type SearchResponse<T> = {
   totalRecords: number;
   result: T[];
 };
+
+type AvailabilityOption = {
+  value: string;
+  label: string;
+};
+
+const availabilityOptions: AvailabilityOption[] = [
+  { value: "Monday", label: "Monday" },
+  { value: "Tuesday", label: "Tuesday" },
+  { value: "Wednesday", label: "Wednesday" },
+  { value: "Thursday", label: "Thursday" },
+  { value: "Friday", label: "Friday" },
+  { value: "Saturday", label: "Saturday" },
+  { value: "Sunday", label: "Sunday" },
+];
 
 export default function SearchUser() {
   const [searchParams, setSearchParams] = useState({
@@ -85,32 +102,32 @@ export default function SearchUser() {
   const updateUser = useMutation({
     mutationFn: async (user: Partial<User>) => {
       const patchDoc = [];
-      if (editableUser?.firstName) {
+      if (user.firstName) {
         patchDoc.push({
           op: "replace",
           path: "/FirstName",
-          value: editableUser.firstName,
+          value: user.firstName,
         });
       }
-      if (editableUser?.lastName) {
+      if (user.lastName) {
         patchDoc.push({
           op: "replace",
           path: "/LastName",
-          value: editableUser.lastName,
+          value: user.lastName,
         });
       }
-      if (editableUser?.role) {
+      if (user.role) {
         patchDoc.push({
           op: "replace",
           path: "/Role",
-          value: editableUser.role,
+          value: user.role,
         });
       }
-      if (editableUser?.availability !== undefined) {
+      if (user.availability !== undefined) {
         patchDoc.push({
           op: "replace",
           path: "/Availability",
-          value: editableUser.availability,
+          value: user.availability,
         });
       }
 
@@ -135,6 +152,37 @@ export default function SearchUser() {
       refetch();
     },
   });
+
+  const { control, handleSubmit, setValue } = useForm<{
+    lastName: string;
+    firstName: string;
+    role: string;
+    availability: AvailabilityOption[];
+  }>({
+    defaultValues: {
+      lastName: "",
+      firstName: "",
+      role: "",
+      availability: [],
+    },
+  });
+
+  useEffect(() => {
+    if (editableUser) {
+      setValue("firstName", editableUser.firstName || "");
+      setValue("lastName", editableUser.lastName || "");
+      setValue("role", editableUser.role || "");
+      setValue(
+        "availability",
+        editableUser.availability
+          ? editableUser.availability.split(", ").map((day) => ({
+              value: day,
+              label: day,
+            }))
+          : []
+      );
+    }
+  }, [editableUser, setValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -163,18 +211,23 @@ export default function SearchUser() {
     setEditableUser({ ...user });
   };
 
-  const handleUpdate = () => {
+  const onSubmit = (data: {
+    firstName: string;
+    lastName: string;
+    role: string;
+    availability: AvailabilityOption[];
+  }) => {
     if (editableUser) {
-      updateUser.mutate(editableUser);
+      updateUser.mutate({
+        ...editableUser,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        role: data.role,
+        availability: data.availability
+          .map((option) => option.value)
+          .join(", "),
+      });
     }
-  };
-
-  const handleEditableUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEditableUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
   };
 
   const totalPages = data ? Math.ceil(data.totalRecords / 5) : 1;
@@ -240,12 +293,12 @@ export default function SearchUser() {
                         <td className="border px-4 py-2">{user.userId}</td>
                         <td className="border px-4 py-2">
                           {editableUserId === user.userId ? (
-                            <input
-                              type="text"
+                            <Controller
                               name="firstName"
-                              value={editableUser?.firstName || ""}
-                              onChange={handleEditableUserChange}
-                              className="w-full"
+                              control={control}
+                              render={({ field }) => (
+                                <input {...field} className="w-full" />
+                              )}
                             />
                           ) : (
                             user.firstName
@@ -253,12 +306,12 @@ export default function SearchUser() {
                         </td>
                         <td className="border px-4 py-2">
                           {editableUserId === user.userId ? (
-                            <input
-                              type="text"
+                            <Controller
                               name="lastName"
-                              value={editableUser?.lastName || ""}
-                              onChange={handleEditableUserChange}
-                              className="w-full"
+                              control={control}
+                              render={({ field }) => (
+                                <input {...field} className="w-full" />
+                              )}
                             />
                           ) : (
                             user.lastName
@@ -266,12 +319,12 @@ export default function SearchUser() {
                         </td>
                         <td className="border px-4 py-2">
                           {editableUserId === user.userId ? (
-                            <input
-                              type="text"
+                            <Controller
                               name="role"
-                              value={editableUser?.role || ""}
-                              onChange={handleEditableUserChange}
-                              className="w-full"
+                              control={control}
+                              render={({ field }) => (
+                                <input {...field} className="w-full" />
+                              )}
                             />
                           ) : (
                             user.role
@@ -279,12 +332,23 @@ export default function SearchUser() {
                         </td>
                         <td className="border px-4 py-2">
                           {editableUserId === user.userId ? (
-                            <input
-                              type="text"
+                            <Controller
                               name="availability"
-                              value={editableUser?.availability || ""}
-                              onChange={handleEditableUserChange}
-                              className="w-full"
+                              control={control}
+                              render={({ field }) => (
+                                <Select
+                                  {...field}
+                                  isMulti
+                                  options={availabilityOptions}
+                                  className="w-full"
+                                  onChange={(selected) => {
+                                    field.onChange(
+                                      selected as MultiValue<AvailabilityOption>
+                                    );
+                                  }}
+                                  value={field.value}
+                                />
+                              )}
                             />
                           ) : (
                             user.availability || "N/A"
@@ -294,7 +358,7 @@ export default function SearchUser() {
                           {editableUserId === user.userId ? (
                             <button
                               className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                              onClick={handleUpdate}
+                              onClick={handleSubmit(onSubmit)}
                             >
                               Update
                             </button>

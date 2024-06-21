@@ -85,7 +85,7 @@ namespace Roster.Features.Users.Operations
             RuleFor(x => x.FirstName).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
             RuleFor(x => x.LastName).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
             RuleFor(x => x.Role).NotEmpty().Matches("^[a-zA-Z'\\s]+$");
-            RuleFor(x => x.Availability).Matches("^[a-zA-Z'\\s]+$");
+            RuleFor(x => x.Availability).Matches("^[a-zA-Z,'\\s]+$");
         }
     }
 

@@ -22,13 +22,10 @@ const IndexLazyImport = createFileRoute('/')()
 const AuthProfileLazyImport = createFileRoute('/_auth/profile')()
 const AuthDashboardLazyImport = createFileRoute('/_auth/dashboard')()
 const AuthLocationsIndexLazyImport = createFileRoute('/_auth/locations/')()
-const AuthUsersModifyusersLazyImport = createFileRoute(
-  '/_auth/users/modifyusers',
-)()
 const AuthUsersCreateLazyImport = createFileRoute('/_auth/users/create')()
 const AuthRostersIdLazyImport = createFileRoute('/_auth/rosters/$id')()
-const AuthUsersSearchEditIndexLazyImport = createFileRoute(
-  '/_auth/users/search-edit/',
+const AuthUsersSearchModifyDeleteIndexLazyImport = createFileRoute(
+  '/_auth/users/search-modify-delete/',
 )()
 
 // Create/Update Routes
@@ -69,13 +66,6 @@ const AuthRostersIndexRoute = AuthRostersIndexImport.update({
   import('./routes/_auth/rosters/index.lazy').then((d) => d.Route),
 )
 
-const AuthUsersModifyusersLazyRoute = AuthUsersModifyusersLazyImport.update({
-  path: '/users/modifyusers',
-  getParentRoute: () => AuthRoute,
-} as any).lazy(() =>
-  import('./routes/_auth/users/modifyusers.lazy').then((d) => d.Route),
-)
-
 const AuthUsersCreateLazyRoute = AuthUsersCreateLazyImport.update({
   path: '/users/create',
   getParentRoute: () => AuthRoute,
@@ -90,12 +80,14 @@ const AuthRostersIdLazyRoute = AuthRostersIdLazyImport.update({
   import('./routes/_auth/rosters/$id.lazy').then((d) => d.Route),
 )
 
-const AuthUsersSearchEditIndexLazyRoute =
-  AuthUsersSearchEditIndexLazyImport.update({
-    path: '/users/search-edit/',
+const AuthUsersSearchModifyDeleteIndexLazyRoute =
+  AuthUsersSearchModifyDeleteIndexLazyImport.update({
+    path: '/users/search-modify-delete/',
     getParentRoute: () => AuthRoute,
   } as any).lazy(() =>
-    import('./routes/_auth/users/search-edit.index.lazy').then((d) => d.Route),
+    import('./routes/_auth/users/search-modify-delete.index.lazy').then(
+      (d) => d.Route,
+    ),
   )
 
 // Populate the FileRoutesByPath interface
@@ -126,10 +118,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthUsersCreateLazyImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/users/modifyusers': {
-      preLoaderRoute: typeof AuthUsersModifyusersLazyImport
-      parentRoute: typeof AuthImport
-    }
     '/_auth/rosters/': {
       preLoaderRoute: typeof AuthRostersIndexImport
       parentRoute: typeof AuthImport
@@ -138,8 +126,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLocationsIndexLazyImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/users/search-edit/': {
-      preLoaderRoute: typeof AuthUsersSearchEditIndexLazyImport
+    '/_auth/users/search-modify-delete/': {
+      preLoaderRoute: typeof AuthUsersSearchModifyDeleteIndexLazyImport
       parentRoute: typeof AuthImport
     }
   }
@@ -154,10 +142,9 @@ export const routeTree = rootRoute.addChildren([
     AuthProfileLazyRoute,
     AuthRostersIdLazyRoute,
     AuthUsersCreateLazyRoute,
-    AuthUsersModifyusersLazyRoute,
     AuthRostersIndexRoute,
     AuthLocationsIndexLazyRoute,
-    AuthUsersSearchEditIndexLazyRoute,
+    AuthUsersSearchModifyDeleteIndexLazyRoute,
   ]),
 ])
 
