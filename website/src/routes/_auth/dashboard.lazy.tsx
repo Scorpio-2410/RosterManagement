@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { Calendar, momentLocalizer, Event } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   component: Dashboard,
@@ -16,8 +19,10 @@ function Dashboard() {
   );
 }
 
+const localizer = momentLocalizer(moment);
+
 function MainContent() {
-  const [rosters, setRosters] = useState<string[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const { data, isLoading, refetch } = useQuery<string[], Error>({
     queryKey: ["fetchRosters"],
     queryFn: fetchRosters,
@@ -26,7 +31,14 @@ function MainContent() {
 
   useEffect(() => {
     if (data) {
-      setRosters(data);
+      const mappedEvents = data.map((roster, index) => ({
+        id: index,
+        title: roster,
+        start: new Date(2023, index % 12, 1), // Sample start date
+        end: new Date(2023, index % 12, 2),   // Sample end date
+        allDay: true,
+      }));
+      setEvents(mappedEvents);
     }
   }, [data]);
 
@@ -36,27 +48,18 @@ function MainContent() {
   }
 
   return (
-    <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-      <Widget title="User Requests" color="bg-white text-teal-500">
-        <p className="text-teal-500">List of user requests...</p>
-      </Widget>
-      <Widget title="Leaves" color="bg-white text-blue-500">
-        <p className="text-blue-500">List of leaves...</p>
-      </Widget>
-      <Widget title="Important Announcements" color="bg-white text-teal-500">
-        <p className="text-teal-500">List of important announcements...</p>
-      </Widget>
-      <Widget title="Roster Overview" color="bg-white text-blue-500">
-        <p className="text-blue-500">List of rosters...</p>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <ul>
-            {rosters.map((roster, index) => (
-              <li key={index}>{roster}</li>
-            ))}
-          </ul>
-        )}
+    <div className="flex-1 p-4">
+      <Widget title="Roster Calendar" color="bg-white text-blue-500">
+        <div style={{ height: 500 }}>
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500 }}
+          />
+        </div>
+        {isLoading && <p>Loading...</p>}
         <button
           onClick={() => refetch()}
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
