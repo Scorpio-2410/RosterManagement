@@ -7,8 +7,10 @@ const Navbar = () => {
   const { isAuthenticated, user, signIn, signOut } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [username, setUsername] = useState("");
   const userDropdownRef = useRef<HTMLDivElement>(null);
+  const locationDropdownRef = useRef<HTMLDivElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,12 +29,20 @@ const Navbar = () => {
     setUserDropdownOpen(!userDropdownOpen);
   };
 
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
   const closeDropdown = () => {
     setDropdownOpen(false);
   };
 
   const closeUserDropdown = () => {
     setUserDropdownOpen(false);
+  };
+
+  const closeLocationDropdown = () => {
+    setLocationDropdownOpen(false);
   };
 
   const handleLogout = () => {
@@ -47,6 +57,12 @@ const Navbar = () => {
         !userDropdownRef.current.contains(event.target as Node)
       ) {
         closeUserDropdown();
+      }
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target as Node)
+      ) {
+        closeLocationDropdown();
       }
       if (
         profileDropdownRef.current &&
@@ -86,12 +102,6 @@ const Navbar = () => {
               >
                 Rosters
               </Link>
-              <Link
-                to="/locations"
-                className="[&.active]:font-bold text-white hover:text-gray-300"
-              >
-                Locations
-              </Link>
               <div className="relative" ref={userDropdownRef}>
                 <button
                   onClick={toggleUserDropdown}
@@ -115,6 +125,34 @@ const Navbar = () => {
                         onClick={closeUserDropdown}
                       >
                         Search Users
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="relative" ref={locationDropdownRef}>
+                <button
+                  onClick={toggleLocationDropdown}
+                  className="[&.active]:font-bold text-white hover:text-gray-300"
+                >
+                  Locations
+                </button>
+                {locationDropdownOpen && (
+                  <div className="absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="py-1">
+                      <Link
+                        to="/locations/create"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={closeLocationDropdown}
+                      >
+                        Create Location
+                      </Link>
+                      <Link
+                        to="/locations/search-modify"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={closeLocationDropdown}
+                      >
+                        Search Locations
                       </Link>
                     </div>
                   </div>

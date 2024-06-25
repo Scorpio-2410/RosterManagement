@@ -3,18 +3,18 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { AppSettings } from "@/utils/configs";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useForm, Controller } from "react-hook-form";
-import Select, { MultiValue } from "react-select";
 
-export const Route = createLazyFileRoute("/_auth/users/search-modify-delete/")({
-  component: SearchModifyDeleteUser,
+export const Route = createLazyFileRoute("/_auth/locations/search-modify")({
+  component: SearchModifyLocations,
 });
 
-type User = {
-  userId: number;
-  firstName: string;
-  lastName: string;
-  role: string;
-  availability: string;
+type Locations = {
+  locationId: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  state: string;
+  country: string;
 };
 
 type SearchResponse<T> = {
@@ -24,49 +24,33 @@ type SearchResponse<T> = {
   result: T[];
 };
 
-type AvailabilityOption = {
-  value: string;
-  label: string;
-};
-
-const availabilityOptions: AvailabilityOption[] = [
-  { value: "Monday", label: "Monday" },
-  { value: "Tuesday", label: "Tuesday" },
-  { value: "Wednesday", label: "Wednesday" },
-  { value: "Thursday", label: "Thursday" },
-  { value: "Friday", label: "Friday" },
-  { value: "Saturday", label: "Saturday" },
-  { value: "Sunday", label: "Sunday" },
-];
-
-function SearchModifyDeleteUser() {
+function SearchModifyLocations() {
   const [searchParams, setSearchParams] = useState({
-    lastName: "",
+    State: "",
   });
-
   const [currentPage, setCurrentPage] = useState(1);
   const [queryKey, setQueryKey] = useState([
-    "users",
+    "locations",
     searchParams,
     currentPage,
   ]);
-  const [editableUserId, setEditableUserId] = useState<number | null>(null);
-  const [editableUser, setEditableUser] = useState<Partial<User> | null>(null);
+  const [editableLocation, setEditableLocation] =
+    useState<Partial<Locations> | null>(null);
 
   useEffect(() => {
-    setQueryKey(["users", searchParams, currentPage]);
+    setQueryKey(["locations", searchParams, currentPage]);
   }, [searchParams, currentPage]);
 
-  const { data, isLoading, refetch } = useQuery<SearchResponse<User>>({
+  const { data, isLoading, refetch } = useQuery<SearchResponse<Locations>>({
     queryKey,
     queryFn: async () => {
       const requestBody = {
         pageNumber: currentPage,
         pageSize: 5,
-        lastName: searchParams.lastName || null,
+        state: searchParams.State || null,
       };
 
-      const res = await fetch(`${AppSettings.baseUrl}/users/search`, {
+      const res = await fetch(`${AppSettings.baseUrl}/locations/search`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,64 +59,52 @@ function SearchModifyDeleteUser() {
       });
 
       const responseData = await res.json();
-
       return responseData;
     },
     enabled: false,
   });
 
-  const deleteUser = useMutation({
-    mutationFn: async (userId: number) => {
-      const res = await fetch(`${AppSettings.baseUrl}/users/delete${userId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to delete user");
-      }
-    },
-    onSuccess: () => {
-      refetch();
-    },
-  });
-
-  const updateUser = useMutation({
-    mutationFn: async (user: Partial<User>) => {
+  const updateLocation = useMutation({
+    mutationFn: async (location: Partial<Locations>) => {
       const patchDoc = [];
-      if (user.firstName) {
+      if (location.address1) {
         patchDoc.push({
           op: "replace",
-          path: "/FirstName",
-          value: user.firstName,
+          path: "/address1",
+          value: location.address1,
         });
       }
-      if (user.lastName) {
+      if (location.address2) {
         patchDoc.push({
           op: "replace",
-          path: "/LastName",
-          value: user.lastName,
+          path: "/address2",
+          value: location.address2,
         });
       }
-      if (user.role) {
+      if (location.city) {
         patchDoc.push({
           op: "replace",
-          path: "/Role",
-          value: user.role,
+          path: "/city",
+          value: location.city,
         });
       }
-      if (user.availability !== undefined) {
+      if (location.state) {
         patchDoc.push({
           op: "replace",
-          path: "/Availability",
-          value: user.availability,
+          path: "/state",
+          value: location.state,
+        });
+      }
+      if (location.country) {
+        patchDoc.push({
+          op: "replace",
+          path: "/country",
+          value: location.country,
         });
       }
 
       const res = await fetch(
-        `${AppSettings.baseUrl}/users/modify${user.userId}`,
+        `${AppSettings.baseUrl}/locations/${location.locationId}`,
         {
           method: "PATCH",
           headers: {
@@ -143,46 +115,35 @@ function SearchModifyDeleteUser() {
       );
 
       if (!res.ok) {
-        throw new Error("Failed to update user");
+        throw new Error("Failed to update location");
       }
     },
     onSuccess: () => {
-      setEditableUserId(null);
-      setEditableUser(null);
+      setEditableLocation(null);
       refetch();
     },
   });
 
-  const { control, handleSubmit, setValue } = useForm<{
-    lastName: string;
-    firstName: string;
-    role: string;
-    availability: AvailabilityOption[];
-  }>({
+  const { control, handleSubmit, setValue } = useForm<Locations>({
     defaultValues: {
-      lastName: "",
-      firstName: "",
-      role: "",
-      availability: [],
+      locationId: "",
+      address1: "",
+      address2: "",
+      city: "",
+      state: "",
+      country: "",
     },
   });
 
   useEffect(() => {
-    if (editableUser) {
-      setValue("firstName", editableUser.firstName || "");
-      setValue("lastName", editableUser.lastName || "");
-      setValue("role", editableUser.role || "");
-      setValue(
-        "availability",
-        editableUser.availability
-          ? editableUser.availability.split(", ").map((day) => ({
-              value: day,
-              label: day,
-            }))
-          : []
-      );
+    if (editableLocation) {
+      setValue("address1", editableLocation.address1 || "");
+      setValue("address2", editableLocation.address2 || "");
+      setValue("city", editableLocation.city || "");
+      setValue("state", editableLocation.state || "");
+      setValue("country", editableLocation.country || "");
     }
-  }, [editableUser, setValue]);
+  }, [editableLocation, setValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -192,7 +153,8 @@ function SearchModifyDeleteUser() {
     }));
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
     setCurrentPage(1);
     refetch({ throwOnError: false, cancelRefetch: false });
   };
@@ -202,30 +164,19 @@ function SearchModifyDeleteUser() {
     refetch({ throwOnError: false, cancelRefetch: false });
   };
 
-  const handleDelete = (userId: number) => {
-    deleteUser.mutate(userId);
+  const handleEdit = (location: Locations) => {
+    setEditableLocation(location);
   };
 
-  const handleEdit = (user: User) => {
-    setEditableUserId(user.userId);
-    setEditableUser({ ...user });
-  };
-
-  const onSubmit = (data: {
-    firstName: string;
-    lastName: string;
-    role: string;
-    availability: AvailabilityOption[];
-  }) => {
-    if (editableUser) {
-      updateUser.mutate({
-        ...editableUser,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role,
-        availability: data.availability
-          .map((option) => option.value)
-          .join(", "),
+  const onSubmit = (data: Locations) => {
+    if (editableLocation) {
+      updateLocation.mutate({
+        ...editableLocation,
+        address1: data.address1,
+        address2: data.address2,
+        city: data.city,
+        state: data.state,
+        country: data.country,
       });
     }
   };
@@ -235,26 +186,20 @@ function SearchModifyDeleteUser() {
   return (
     <div className="h-screen bg-gradient-to-r from-blue-500 to-teal-400 font-inter flex flex-col justify-center items-center">
       <div className="w-full max-w-4xl p-4 bg-white shadow-md rounded">
-        <form
-          className="flex mb-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch();
-          }}
-        >
+        <form className="flex mb-4" onSubmit={handleSearch}>
           <div className="mr-4 flex-grow">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="lastName"
+              htmlFor="State"
             >
-              Last Name
+              State
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={searchParams.lastName}
+              name="State"
+              placeholder="State"
+              value={searchParams.State}
               onChange={handleInputChange}
             />
           </div>
@@ -280,82 +225,93 @@ function SearchModifyDeleteUser() {
                   <thead>
                     <tr>
                       <th className="px-4 py-2">ID</th>
-                      <th className="px-4 py-2">First Name</th>
-                      <th className="px-4 py-2">Last Name</th>
-                      <th className="px-4 py-2">Role</th>
-                      <th className="px-4 py-2">Availability</th>
+                      <th className="px-4 py-2">Address 1</th>
+                      <th className="px-4 py-2">Address 2</th>
+                      <th className="px-4 py-2">City</th>
+                      <th className="px-4 py-2">State</th>
+                      <th className="px-4 py-2">Country</th>
                       <th className="px-4 py-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {data.result.map((user: User) => (
-                      <tr key={user.userId}>
-                        <td className="border px-4 py-2">{user.userId}</td>
+                    {data.result.map((location: Locations) => (
+                      <tr key={location.locationId}>
                         <td className="border px-4 py-2">
-                          {editableUserId === user.userId ? (
+                          {location.locationId}
+                        </td>
+                        <td className="border px-4 py-2">
+                          {editableLocation?.locationId ===
+                          location.locationId ? (
                             <Controller
-                              name="firstName"
+                              name="address1"
                               control={control}
                               render={({ field }) => (
                                 <input {...field} className="w-full" />
                               )}
                             />
                           ) : (
-                            user.firstName
+                            location.address1
                           )}
                         </td>
                         <td className="border px-4 py-2">
-                          {editableUserId === user.userId ? (
+                          {editableLocation?.locationId ===
+                          location.locationId ? (
                             <Controller
-                              name="lastName"
+                              name="address2"
                               control={control}
                               render={({ field }) => (
                                 <input {...field} className="w-full" />
                               )}
                             />
                           ) : (
-                            user.lastName
+                            location.address2 || "N/A"
                           )}
                         </td>
                         <td className="border px-4 py-2">
-                          {editableUserId === user.userId ? (
+                          {editableLocation?.locationId ===
+                          location.locationId ? (
                             <Controller
-                              name="role"
+                              name="city"
                               control={control}
                               render={({ field }) => (
                                 <input {...field} className="w-full" />
                               )}
                             />
                           ) : (
-                            user.role
+                            location.city
                           )}
                         </td>
                         <td className="border px-4 py-2">
-                          {editableUserId === user.userId ? (
+                          {editableLocation?.locationId ===
+                          location.locationId ? (
                             <Controller
-                              name="availability"
+                              name="state"
                               control={control}
                               render={({ field }) => (
-                                <Select
-                                  {...field}
-                                  isMulti
-                                  options={availabilityOptions}
-                                  className="w-full"
-                                  onChange={(selected) => {
-                                    field.onChange(
-                                      selected as MultiValue<AvailabilityOption>
-                                    );
-                                  }}
-                                  value={field.value}
-                                />
+                                <input {...field} className="w-full" />
                               )}
                             />
                           ) : (
-                            user.availability || "N/A"
+                            location.state
+                          )}
+                        </td>
+                        <td className="border px-4 py-2">
+                          {editableLocation?.locationId ===
+                          location.locationId ? (
+                            <Controller
+                              name="country"
+                              control={control}
+                              render={({ field }) => (
+                                <input {...field} className="w-full" />
+                              )}
+                            />
+                          ) : (
+                            location.country
                           )}
                         </td>
                         <td className="border px-4 py-2 flex space-x-2">
-                          {editableUserId === user.userId ? (
+                          {editableLocation?.locationId ===
+                          location.locationId ? (
                             <button
                               className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
                               onClick={handleSubmit(onSubmit)}
@@ -365,17 +321,11 @@ function SearchModifyDeleteUser() {
                           ) : (
                             <button
                               className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                              onClick={() => handleEdit(user)}
+                              onClick={() => handleEdit(location)}
                             >
                               Modify
                             </button>
                           )}
-                          <button
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                            onClick={() => handleDelete(user.userId)}
-                          >
-                            Delete
-                          </button>
                         </td>
                       </tr>
                     ))}
@@ -398,7 +348,9 @@ function SearchModifyDeleteUser() {
                 </div>
               </>
             ) : (
-              <div className="text-center text-gray-700">No users found</div>
+              <div className="text-center text-gray-700">
+                No locations found
+              </div>
             )}
           </>
         )}
