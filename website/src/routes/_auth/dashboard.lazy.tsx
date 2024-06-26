@@ -31,13 +31,20 @@ function MainContent() {
 
   useEffect(() => {
     if (data) {
-      const mappedEvents = data.map((roster, index) => ({
-        id: index,
-        title: roster,
-        start: new Date(2023, index % 12, 1), // Sample start date
-        end: new Date(2023, index % 12, 2),   // Sample end date
-        allDay: true,
-      }));
+      const mappedEvents = [
+        {
+          id: 1,
+          title: "Nabidul Islam",
+          start: new Date(2024, 5, 26, 9, 0, 0), // June 26, 2024, 09:00 AM
+          end: new Date(2024, 5, 26, 17, 0, 0), // June 26, 2024, 05:00 PM
+        },
+        {
+          id: 2,
+          title: "Tahani Reza",
+          start: new Date(2024, 5, 26, 10, 0, 0), // June 26, 2024, 10:00 AM
+          end: new Date(2024, 5, 26, 18, 0, 0), // June 26, 2024, 06:00 PM
+        },
+      ];
       setEvents(mappedEvents);
     }
   }, [data]);
@@ -50,13 +57,15 @@ function MainContent() {
   return (
     <div className="flex-1 p-4">
       <Widget title="Roster Calendar" color="bg-white text-blue-500">
-        <div style={{ height: 500 }}>
+        <div style={{ height: 700 }}>
           <Calendar
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500 }}
+            style={{ height: 700 }}
+            showMultiDayTimes={true}
+            dayLayoutAlgorithm="no-overlap"
           />
         </div>
         {isLoading && <p>Loading...</p>}
