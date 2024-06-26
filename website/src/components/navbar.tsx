@@ -179,14 +179,14 @@ const Navbar = () => {
                   <div className="absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div className="py-1">
                       <Link
-                        to="/rosters/create"
+                        to="/rosters/createroster"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={closeRosterDropdown}
                       >
                         Create Roster
                       </Link>
                       <Link
-                        to="/rosters/search"
+                        to="/rosters/searchroster"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={closeRosterDropdown}
                       >

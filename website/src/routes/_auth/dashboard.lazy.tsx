@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Calendar, momentLocalizer, Event } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { AppSettings } from "@/utils/configs";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   component: Dashboard,
@@ -11,10 +12,8 @@ export const Route = createFileRoute("/_auth/dashboard")({
 
 function Dashboard() {
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-r from-blue-500 to-teal-400 font-inter">
-      <div className="flex-1 flex flex-col">
-        <MainContent />
-      </div>
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-500 to-teal-400 font-inter">
+      <MainContent />
     </div>
   );
 }
@@ -55,7 +54,18 @@ function MainContent() {
   }
 
   return (
-    <div className="flex-1 p-4">
+    <div className="flex-1 p-4 space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Widget title="Total Rosters" color="bg-white text-blue-500">
+          <p className="text-2xl">3</p>
+        </Widget>
+        <Widget title="Total Shifts" color="bg-white text-blue-500">
+          <p className="text-2xl">6</p>
+        </Widget>
+        <Widget title="Total Users" color="bg-white text-blue-500">
+          <p className="text-2xl">2</p>
+        </Widget>
+      </div>
       <Widget title="Roster Calendar" color="bg-white text-blue-500">
         <div style={{ height: 700 }}>
           <Calendar
@@ -76,7 +86,37 @@ function MainContent() {
           Refresh
         </button>
       </Widget>
+      <Widget title="Rosters" color="bg-white text-blue-500">
+        <RosterList />
+      </Widget>
     </div>
+  );
+}
+
+function RosterList() {
+  const { data, isLoading } = useQuery<string[], Error>({
+    queryKey: ["fetchRostersList"],
+    queryFn: async () => {
+      const response = await fetch(`${AppSettings.baseUrl}/rosters`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch rosters");
+      }
+      return response.json();
+    },
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  return (
+    <ul>
+      {data?.map((roster, index) => (
+        <li key={index} className="border-b py-2">
+          {roster}
+        </li>
+      ))}
+    </ul>
   );
 }
 

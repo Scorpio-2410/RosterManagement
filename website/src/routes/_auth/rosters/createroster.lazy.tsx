@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { AppSettings } from "@/utils/configs";
 
-export const Route = createLazyFileRoute("/_auth/rosters/create")({
+export const Route = createLazyFileRoute("/_auth/rosters/createroster")({
   component: CreateRoster,
 });
 

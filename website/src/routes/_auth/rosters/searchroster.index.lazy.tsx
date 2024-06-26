@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { AppSettings } from "@/utils/configs";
 
-export const Route = createLazyFileRoute("/_auth/rosters/search")({
+export const Route = createLazyFileRoute("/_auth/rosters/searchroster/")({
   component: SearchRosters,
 });
 

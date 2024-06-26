@@ -1,5 +1,3 @@
-import { Link } from "@tanstack/react-router";
-
 interface DropdownProps {
   toggleDropdown: () => void;
   dropdownOpen: boolean;
@@ -40,13 +38,6 @@ const Dropdown = ({
       {dropdownOpen && (
         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
           <div className="py-1" role="none">
-            <Link
-              to="/profile"
-              onClick={closeDropdown}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              Profile Settings
-            </Link>
             <button
               onClick={() => {
                 closeDropdown();
