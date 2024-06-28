@@ -83,7 +83,8 @@ namespace Roster.Features.Rosters.Operations
                 validationContext.AddFailure(new ValidationFailure()
                 {
                     ErrorMessage = "Start and End Date of shift do not match!",
-                    ErrorCode = ShiftValidationErrorCodes.DATES_DO_NOT_MATCH
+                    ErrorCode = ShiftValidationErrorCodes.DATES_DO_NOT_MATCH,
+                    PropertyName = nameof(Payload.StartAt)
                 });
 
             //Business rule 2
@@ -91,7 +92,9 @@ namespace Roster.Features.Rosters.Operations
                 validationContext.AddFailure(new ValidationFailure()
                 {
                     ErrorMessage = "Start date must be with in roster!",
-                    ErrorCode = ShiftValidationErrorCodes.DATE_NOT_IN_ROSTER
+                    ErrorCode = ShiftValidationErrorCodes.DATE_NOT_IN_ROSTER,
+                    PropertyName = nameof(Payload.StartAt)
+
                 });
 
             //Business rule 3
@@ -99,7 +102,8 @@ namespace Roster.Features.Rosters.Operations
                 validationContext.AddFailure(new ValidationFailure()
                 {
                     ErrorMessage = "Start date must be with in roster!",
-                    ErrorCode = ShiftValidationErrorCodes.DATE_NOT_IN_ROSTER
+                    ErrorCode = ShiftValidationErrorCodes.DATE_NOT_IN_ROSTER,
+                    PropertyName = nameof(Payload.StartAt),
 
                 });
             //Business rule 4
@@ -107,7 +111,8 @@ namespace Roster.Features.Rosters.Operations
                 validationContext.AddFailure(new ValidationFailure()
                 {
                     ErrorMessage = "Cant work twice on the same day!",
-                    ErrorCode = ShiftValidationErrorCodes.USER_CANNOT_WORK_AGAIN_IN_SHIFT
+                    ErrorCode = ShiftValidationErrorCodes.USER_CANNOT_WORK_AGAIN_IN_SHIFT,
+                    PropertyName = string.Empty
                 });
 
             //Business rule 5
@@ -115,14 +120,16 @@ namespace Roster.Features.Rosters.Operations
                 validationContext.AddFailure(new ValidationFailure() 
                 {
                     ErrorMessage = "Cant work more than 8 hours in roster!",
-                    ErrorCode = ShiftValidationErrorCodes.USER_CANNOT_WORK_PAST_MAXIMUM_HOURS
+                    ErrorCode = ShiftValidationErrorCodes.USER_CANNOT_WORK_PAST_MAXIMUM_HOURS,
+                    PropertyName = string.Empty
                 });
             //Business rule 6
             if (roster.IsLocked == true)
                 validationContext.AddFailure(new ValidationFailure()
                 {
                     ErrorMessage = "Cannot add shift to locked Roster!",
-                    ErrorCode = ShiftValidationErrorCodes.ROSTER_IS_LOCKED
+                    ErrorCode = ShiftValidationErrorCodes.ROSTER_IS_LOCKED,
+                    PropertyName = nameof(roster.IsLocked)
                 });
             return true;
         }
